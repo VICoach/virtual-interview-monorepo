@@ -5,6 +5,7 @@ services:
       - "4000:3000"
     depends_on:
       - db
+
   db:
     image: postgres:latest
     ports:
@@ -14,10 +15,22 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
     volumes:
-      - ${DB_VOLUME}:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data  
+
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
     depends_on:
       - backend
+
+  api:
+    build: ./api
+    ports:
+      - "8002:8002"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
+    driver: local 
