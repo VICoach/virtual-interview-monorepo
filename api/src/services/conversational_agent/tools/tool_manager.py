@@ -1,6 +1,6 @@
 from src.services.conversational_agent.tools.response_processor import ResponseProcessor   
 from src.services.conversational_agent.tools.tool import Tool
-from api import get_settings , get_logger
+from src import get_settings , get_logger
 from typing import List, Optional, Dict
 
 # Initialize settings and logger

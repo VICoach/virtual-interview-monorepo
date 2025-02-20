@@ -1,7 +1,7 @@
 from src.services.conversational_agent.llm_clients.llm import LLM 
 from typing import Union, List, Dict, AsyncIterator, Any
 from src.services.utils import exponential_backoff
-from api import get_settings , get_logger
+from src import get_settings , get_logger
 from openai import  AsyncAzureOpenAI 
 from typing import AsyncIterator
 

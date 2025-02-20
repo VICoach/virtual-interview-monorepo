@@ -35,7 +35,7 @@ def sample_data():
 
 
 @pytest.mark.asyncio
-@patch("api.services.utils.yaml_read_file")  # Updated patch target
+@patch("src.services.utils.yaml_read_file")  # Updated patch target
 async def test_create_system_prompt_no_tools_no_knowledge_base(mock_yaml_read_file, language_lib_dir, sample_data):
     mock_yaml_read_file.return_value = sample_data
     prompt_manager = PromptManager(language_lib_dir)
@@ -46,7 +46,7 @@ async def test_create_system_prompt_no_tools_no_knowledge_base(mock_yaml_read_fi
     assert result == expected_prompt
 
 @pytest.mark.asyncio
-@patch("api.services.utils.yaml_read_file")  # Updated patch target
+@patch("src.services.utils.yaml_read_file")  # Updated patch target
 async def test_create_system_prompt_invalid_language(mock_yaml_read_file, language_lib_dir, sample_data):
     mock_yaml_read_file.return_value = sample_data
     prompt_manager = PromptManager(language_lib_dir)

@@ -2,6 +2,8 @@ import os
 import json
 from functools import lru_cache
 from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
+
 from typing import Literal
 
 class Settings(BaseSettings):
@@ -10,7 +12,23 @@ class Settings(BaseSettings):
     Utilizes the BaseSettings from pydantic for environment variables.
     """
 
+     # The environment variable to determine the environment of the application
+    ENVIRONMENT: Literal["local", "dev", "prod"]
+    
+    # Azure Credentials for the Azure AI Lab API
+    AZURE_BASE_URL: str = None
+    AZURE_API_KEY: str = None
+    
+    # The pattern to indicate the end of a response stream for the websocket communication
+    END_STREAM_PATTERN: str = "__end_of_response__"
+    
+    # The format with which the LLM can call a function such as retrieve knowledge - extract x-ray events...
+    FUNC_CALLING_FORMAT: str = """{
+        "function_name": "here you put the name of the function to call", 
+        "params": "A dictionary of query arguments for the function call",
+    }"""
     model_config = ConfigDict(extra="ignore" , env_file = ".env")
+        
 
 
 @lru_cache(maxsize=None)
