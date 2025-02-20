@@ -10,9 +10,7 @@ class Settings(BaseSettings):
     Utilizes the BaseSettings from pydantic for environment variables.
     """
 
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
+    model_config = ConfigDict(extra="ignore" , env_file = ".env")
 
 
 @lru_cache(maxsize=None)

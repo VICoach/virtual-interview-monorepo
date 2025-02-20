@@ -1,0 +1,21 @@
+English:
+  tools_prompt_injection: |
+    Available Tools: {tools}.
+    To call a tool, your output must strictly follow this format: {FUNC_CALLING_FORMAT}.
+    Only use the tools that are available to you.
+    When you are asked a question that requires a chain tool usages you can call your tools one by one, use the function calling format for the first tool, once you get your response use the function calling format again to answer the second question, so on and so forth. 
+    For example your output can look like this : 
+    to answer 'question1' I need to use the toolx {FUNC_CALLING_FORMAT}
+    now that I have the answer to question 1 I will use tooly {FUNC_CALLING_FORMAT}...
+    don't use ticks, Don't output ```json {FUNC_CALLING_FORMAT}``` instead just output {FUNC_CALLING_FORMAT}
+  
+  knowledge_base_prompt_injection: |
+    Knowledge Base Content: {knowledge_base_content}
+    
+    Use the above information to answer user queries accurately.
+
+  proper_tool_use_injection: |
+    Before using any tool, explain why you think it is necessary and how you are going to use it.
+    Ensure your responses are scientific, clear, and directly address the user's needs.
+    If you are asked a question that you do not know the answer to, or do not have the tool to answer, tell the user that you simply don't know the answer yet. Also don't use ticks or code blocks between ticks.
+
