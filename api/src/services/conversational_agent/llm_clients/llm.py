@@ -1,7 +1,7 @@
 from typing import Union, List, Dict, AsyncIterator, Any
 from abc import ABC, abstractmethod
-from api.config.settings import get_settings
-from api.logger.logger import get_logger
+from src.config.settings import get_settings
+from src.logger.logger import get_logger
 from typing import AsyncIterator
 
 logger = get_logger(__file__)

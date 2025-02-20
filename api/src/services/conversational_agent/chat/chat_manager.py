@@ -1,5 +1,5 @@
-from api.services.conversational_agent.llm_clients.llm_collection import CollectionLLM
-from api.services.conversational_agent.tools.tool_manager import ToolManager
+from src.services.conversational_agent.llm_clients.llm_collection import CollectionLLM
+from src.services.conversational_agent.tools.tool_manager import ToolManager
 from typing import AsyncIterator, Dict, List
 from api import get_settings , get_logger
 

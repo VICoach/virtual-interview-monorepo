@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, AsyncMock, MagicMock
 from src.services.conversational_agent.llm_clients.azure_openai_llm import AzureOpenAILLM  # Correct import path
-from src import get_settings, get_logger
+from api import get_settings, get_logger
 from typing import List, Dict, Any
 
 settings = get_settings()

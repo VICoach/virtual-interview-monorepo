@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from api.logger.logger import get_logger
+from src.logger.logger import get_logger
 from fastapi import UploadFile
 
 

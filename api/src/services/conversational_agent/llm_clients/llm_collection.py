@@ -1,8 +1,8 @@
-from api.services.conversational_agent.llm_clients import azure_openai_llm
-from api.services.conversational_agent.llm_clients.llm import LLM
+from src.services.conversational_agent.llm_clients import azure_openai_llm
+from src.services.conversational_agent.llm_clients.llm import LLM
 from typing import Union, List, Dict, AsyncIterator, Any
-from api.config.settings import get_settings
-from api.logger.logger import get_logger
+from src.config.settings import get_settings
+from src.logger.logger import get_logger
 
 
 

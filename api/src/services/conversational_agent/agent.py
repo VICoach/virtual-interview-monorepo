@@ -1,10 +1,10 @@
-from api.services.conversational_agent.prompt_manager.prompt_manager import PromptManager
-from api.services.conversational_agent.tools.tool_manager import ToolManager
-from api.services.conversational_agent.chat.chat_manager import ChatManager
-from api.services.conversational_agent.tools.tool import Tool
+from src.services.conversational_agent.prompt_manager.prompt_manager import PromptManager
+from src.services.conversational_agent.tools.tool_manager import ToolManager
+from src.services.conversational_agent.chat.chat_manager import ChatManager
+from src.services.conversational_agent.tools.tool import Tool
 from typing import List, Dict, Union , AsyncIterator
-from api.config.settings import get_settings
-from api.logger.logger import get_logger
+from src.config.settings import get_settings
+from src.logger.logger import get_logger
 import os 
 
 logger = get_logger(__file__)

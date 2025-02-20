@@ -2,9 +2,9 @@ import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
-from api.config.settings import get_settings
-from api.logger.logger import get_logger
-from api.routers import test_router
+from src.config.settings import get_settings
+from src.logger.logger import get_logger
+from src.routers import test_router
 settings = get_settings()
 logger = get_logger(__file__)
 

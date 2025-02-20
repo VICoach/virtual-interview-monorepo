@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from api.schemas.test_schema import TestCreate, TestResponse
-from api.logger.logger import get_logger
+from src.schemas.test_schema import TestCreate, TestResponse
+from src.logger.logger import get_logger
 
 
 
