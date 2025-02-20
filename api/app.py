@@ -30,7 +30,7 @@ logger.info(f"Starting App : \n {ascii_art}")
 
 logger.info("App Ready")
 
-app.include_router(test_router.router, tags=["Test"])
+app.include_router(router_llm_chat.router, tags=["Test"])
 
 @app.get("/", response_class=PlainTextResponse)
 async def root():
@@ -44,6 +44,8 @@ if __name__ == "__main__":
             app,
             port=8002,
             host="0.0.0.0",
+            ws_ping_interval=settings.PING_PONG_INTERVAL, 
+            ws_ping_timeout=settings.PING_PONG_INTERVAL
 
         )
     except KeyboardInterrupt as ki : 

@@ -38,7 +38,7 @@ class Tool(BaseModel):
         return text.strip('_')
     
     def __str__(self):
-        return f"Tool(cname={self.name}, description={self.detailed_description})"
+        return f"Tool(name={self.name}, description={self.detailed_description})"
 
     @property
     def example_usage(self) -> str:

@@ -27,6 +27,9 @@ class Settings(BaseSettings):
         "function_name": "here you put the name of the function to call", 
         "params": "A dictionary of query arguments for the function call",
     }"""
+    
+    PING_PONG_INTERVAL : int = 3600
+    
     model_config = ConfigDict(extra="ignore" , env_file = ".env")
         
 
