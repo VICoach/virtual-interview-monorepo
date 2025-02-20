@@ -13,7 +13,7 @@ settings = get_settings()
 # Constants from settings
 END_STREAM_PATTERN = settings.END_STREAM_PATTERN
 FUNC_CALLING_FORMAT = settings.FUNC_CALLING_FORMAT
-PROMPT_LIB_PATH = os.path.join("api","services","conversational_agent","prompt_manager","system_prompt_lib.yml")
+PROMPT_LIB_PATH = os.path.join("src","services","conversational_agent","prompt_manager","system_prompt_lib.yml")
 PROMPT_MANAGER = PromptManager(PROMPT_LIB_PATH)
 
 class Agent:
