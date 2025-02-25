@@ -12,10 +12,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
       - name: Install dependencies (backend)
         run: npm ci
         working-directory: ./backend
@@ -24,6 +32,10 @@ jobs:
         run: npm ci
         working-directory: ./frontend
 
+      - name: Install dependencies (api)
+        run: pip install -r requirements.txt
+        working-directory: ./api
+
       - name: Lint and test (backend)
         run: npm run lint && npm test
         working-directory: ./backend
@@ -31,6 +43,7 @@ jobs:
       - name: Lint (frontend)
         run: npm run lint
         working-directory: ./frontend
+
   build-and-push:
     runs-on: ubuntu-latest
     needs: lint-and-test
@@ -52,3 +65,8 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:latest ./frontend
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:latest
+
+      - name: Build and push api image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/api:latest ./api
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/api:latest
