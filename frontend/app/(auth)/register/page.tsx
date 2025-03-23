@@ -11,8 +11,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { useRegisterUserMutation } from "@/state/api";
 
 const RegisterPage = () => {
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
+
   const methods = useForm<UserRegistrationFormData>({
     resolver: zodResolver(userRegistrationSchema),
     defaultValues: {
@@ -25,7 +28,8 @@ const RegisterPage = () => {
 
   const onSubmit = async (data: UserRegistrationFormData) => {
     try {
-      console.log("Form data:", data);
+      const response = await registerUser(data).unwrap();
+      console.log("Registration response:", response);
     } catch (error) {
       console.error("Failed to sign up:", error);
     }
@@ -42,7 +46,7 @@ const RegisterPage = () => {
                   name="username"
                   label="Username"
                   type="text"
-                  placeholder="Enter your username"
+                  placeholder="eg. johndoe"
                   className="border-none"
                 />
               </div>
@@ -51,7 +55,7 @@ const RegisterPage = () => {
                   name="email"
                   label="Email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="example@gmail.com"
                   className="border-none"
                 />
               </div>
@@ -73,9 +77,12 @@ const RegisterPage = () => {
                   className="border-none"
                 />
               </div>
-              <Button variant="outline" type="submit">
-                Sign up
-              </Button>
+              <div className="flex justify-end">
+                <Button className="w-1/3" variant="outline" type="submit">
+                  Sign up
+                </Button>
+              </div>
+
               <div className="text-customgreys-dirtyGrey flex items-center justify-center space-x-2 py-4 text-sm">
                 <div className="bg-primary-500 h-px w-full" />
                 <span>OR</span>

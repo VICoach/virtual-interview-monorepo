@@ -3,6 +3,7 @@ import { CustomFormField } from "@/components/CustomFormField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { UserLoginFormData, userLoginSchema } from "@/lib/schemas";
+import { useLoginUserMutation } from "@/state/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +11,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 const LoginPage = () => {
+  const [loginUser, { isLoading }] = useLoginUserMutation();
+
   const methods = useForm<UserLoginFormData>({
     resolver: zodResolver(userLoginSchema),
     defaultValues: {
@@ -19,7 +22,8 @@ const LoginPage = () => {
   });
   const onSubmit = async (data: UserLoginFormData) => {
     try {
-      console.log("Form data:", data);
+      const response = await loginUser(data).unwrap();
+      console.log("Login response:", response);
     } catch (error) {
       console.error("Failed to log in:", error);
     }
@@ -36,7 +40,7 @@ const LoginPage = () => {
                   name="email"
                   label="Email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="example@gmail.com"
                   className="border-none"
                 />
               </div>
@@ -54,9 +58,11 @@ const LoginPage = () => {
                   Forgot Password?
                 </p>
               </Link>
-              <Button variant="outline" type="submit">
-                Sign in
-              </Button>
+              <div className="flex justify-end">
+                <Button className="w-1/3" variant="outline" type="submit">
+                  Sign in
+                </Button>
+              </div>
               <div className="text-customgreys-dirtyGrey flex items-center justify-center space-x-2 py-4 text-sm">
                 <div className="bg-primary-500 h-px w-full" />
                 <span>OR</span>
