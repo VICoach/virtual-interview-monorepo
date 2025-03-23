@@ -86,7 +86,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
             placeholder={placeholder}
             {...field}
             rows={3}
-            className={`border-none bg-customgreys-darkGrey p-4 ${inputClassName}`}
+            className={`bg-customgreys-darkGrey border-none p-4 ${inputClassName}`}
           />
         );
       case "select":
@@ -97,16 +97,16 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
             onValueChange={field.onChange}
           >
             <SelectTrigger
-              className={`w-full border-none bg-customgreys-primarybg p-4 ${inputClassName}`}
+              className={`bg-customgreys-primarybg w-full border-none p-4 ${inputClassName}`}
             >
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
-            <SelectContent className="w-full border-customgreys-dirtyGrey bg-customgreys-primarybg shadow">
+            <SelectContent className="border-customgreys-dirtyGrey bg-customgreys-primarybg w-full shadow">
               {options?.map((option) => (
                 <SelectItem
                   key={option.value}
                   value={option.value}
-                  className={`cursor-pointer hover:!bg-gray-100 hover:!text-customgreys-darkGrey`}
+                  className={`hover:!text-customgreys-darkGrey cursor-pointer hover:!bg-gray-100`}
                 >
                   {option.label}
                 </SelectItem>
@@ -155,7 +155,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
             type="number"
             placeholder={placeholder}
             {...field}
-            className={`border-none bg-customgreys-darkGrey p-4 ${inputClassName}`}
+            className={`bg-customgreys-darkGrey border-none p-4 ${inputClassName}`}
             disabled={disabled}
           />
         );
@@ -174,7 +174,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
             type={type}
             placeholder={placeholder}
             {...field}
-            className={`border-none bg-customgreys-primarybg p-4 ${inputClassName}`}
+            className={`bg-customgreys-primarybg rounded-full border-[#24424B] p-4 font-normal focus-visible:ring-[#24424B] ${inputClassName}`}
             disabled={disabled}
           />
         );
@@ -195,7 +195,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
           {type !== "switch" && (
             <div className="flex items-center justify-between">
               <FormLabel
-                className={`text-sm text-customgreys-dirtyGrey ${labelClassName}`}
+                className={`text-primary-600 ml-5 text-sm font-medium ${labelClassName}`}
               >
                 {label}
               </FormLabel>
@@ -204,7 +204,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
                 isIcon &&
                 type !== "file" &&
                 type !== "multi-input" && (
-                  <Edit className="size-4 text-customgreys-dirtyGrey" />
+                  <Edit className="text-customgreys-dirtyGrey size-4" />
                 )}
             </div>
           )}
@@ -214,7 +214,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
               value: field.value !== undefined ? field.value : initialValue,
             })}
           </FormControl>
-          <FormMessage className="text-red-400" />
+          <FormMessage className="ml-5 text-red-400" />
         </FormItem>
       )}
     />
@@ -251,7 +251,7 @@ const MultiInputField: React.FC<MultiInputFieldProps> = ({
                 <Input
                   {...field}
                   placeholder={placeholder}
-                  className={`flex-1 border-none bg-customgreys-darkGrey p-4 ${inputClassName}`}
+                  className={`bg-customgreys-darkGrey flex-1 border-none p-4 ${inputClassName}`}
                 />
               </FormControl>
             )}
@@ -272,7 +272,7 @@ const MultiInputField: React.FC<MultiInputFieldProps> = ({
         onClick={() => append("")}
         variant="outline"
         size="sm"
-        className="mt-2 text-customgreys-dirtyGrey"
+        className="text-customgreys-dirtyGrey mt-2"
       >
         <Plus className="mr-2 h-4 w-4" />
         Add Item

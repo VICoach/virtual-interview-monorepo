@@ -1,12 +1,16 @@
 import Providers from "./providers";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 
 import "./globals.css";
 import { Toaster } from "sonner";
 import { Suspense } from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-roboto",
+});
 
 export const metadata: Metadata = {
   title: "VICoach",
@@ -21,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={roboto.className}>
         <Providers>
           <Suspense fallback={null}>
             <div className="mx-auto h-full w-full items-center justify-center">
