@@ -1,6 +1,6 @@
 import Providers from "./providers";
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Roboto, Sansita } from "next/font/google";
 
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -10,6 +10,12 @@ const roboto = Roboto({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-roboto",
+});
+
+const sansita = Sansita({
+  subsets: ["latin"],
+  weight: ["400", "700", "800"],
+  variable: "--font-sansita",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={roboto.className}>
+      <body className={`${roboto.variable} ${sansita.variable}`}>
         <Providers>
           <Suspense fallback={null}>
             <div className="mx-auto h-full w-full items-center justify-center">

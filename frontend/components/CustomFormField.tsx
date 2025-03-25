@@ -174,7 +174,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
             type={type}
             placeholder={placeholder}
             {...field}
-            className={`bg-customgreys-primarybg rounded-full border-[#24424B] p-4 font-normal focus-visible:ring-[#24424B] ${inputClassName}`}
+            className={`rounded-full border-[#24424B] bg-transparent p-4 px-5 font-medium focus-visible:ring-[#24424B] ${inputClassName}`}
             disabled={disabled}
           />
         );
@@ -195,7 +195,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
           {type !== "switch" && (
             <div className="flex items-center justify-between">
               <FormLabel
-                className={`text-primary-600 ml-5 text-sm font-medium ${labelClassName}`}
+                className={`ml-5 text-sm font-medium text-primary-600 ${labelClassName}`}
               >
                 {label}
               </FormLabel>
