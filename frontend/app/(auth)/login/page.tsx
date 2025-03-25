@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { motion } from "framer-motion";
 
 const LoginPage = () => {
   const [loginUser, { isLoading }] = useLoginUserMutation();
@@ -30,21 +31,36 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="max-w-screen relative flex min-h-screen items-center justify-center overflow-hidden bg-[#e2eced] bg-cover bg-center bg-no-repeat px-4 sm:bg-[url('/login.png')]">
-      <div className="absolute bottom-20 left-0 flex h-screen w-full items-center justify-center gap-4 sm:left-20 sm:gap-12 md:left-24 md:gap-16 lg:left-32 lg:gap-10 xl:left-40 xl:gap-20">
-        <div className="flex w-24 flex-col items-start justify-start sm:w-32 lg:w-52 xl:w-60">
+    <div className="max-w-screen relative flex min-h-screen items-center justify-center">
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="absolute bottom-20 left-0 flex h-screen w-full items-center justify-center gap-4 sm:left-20 sm:gap-12 md:left-24 md:gap-16 lg:left-32 lg:gap-10 xl:left-44 xl:gap-16"
+      >
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="flex w-24 flex-col items-center sm:w-32 lg:w-52 xl:w-60"
+        >
           <Image
             src="/logo.png"
             alt="Logo"
-            width={150}
-            height={150}
+            width={180}
+            height={180}
             className="mb-5 md:mb-10"
           />
           <h1 className="w-24 font-[Sansita] text-xs font-extrabold uppercase text-primary-500 sm:w-40 sm:text-lg lg:w-52 lg:text-2xl xl:w-60 xl:text-3xl">
             Welcome back! We have missed you
           </h1>
-        </div>
-        <div className="w-full max-w-52 md:max-w-60 lg:max-w-72 xl:max-w-80">
+        </motion.div>
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1.5 }}
+          className="w-full max-w-52 md:max-w-60 lg:max-w-72 xl:max-w-80"
+        >
           <Form {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
               <div className="mt-5 flex flex-col justify-between">
@@ -73,7 +89,7 @@ const LoginPage = () => {
                 </Link>
                 <div className="mt-4 flex items-center justify-between">
                   <Link href="/register">
-                    <span className="text-primary-300 ml-2 text-center font-[Sansita] text-sm italic hover:text-primary-400 hover:underline">
+                    <span className="ml-2 text-center font-[Sansita] text-sm italic text-primary-300 hover:text-primary-400 hover:underline">
                       Don't have an account?
                     </span>
                   </Link>
@@ -101,8 +117,8 @@ const LoginPage = () => {
               </div>
             </form>
           </Form>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
