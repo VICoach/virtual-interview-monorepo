@@ -255,7 +255,6 @@ export class AuthService {
   private generateAccessToken(user: User) {
     const payload = {
       sub: user.user_id,
-      email: user.email,
       accountType: user.accountType,
     };
     return this.jwtService.sign(payload, {
@@ -267,6 +266,7 @@ export class AuthService {
   private generateRefreshToken(user: User) {
     const payload = {
       sub: user.user_id,
+      accountType: user.accountType,
       type: 'refresh',
     };
     return this.jwtService.sign(payload, {
@@ -278,6 +278,7 @@ export class AuthService {
   private generateResetPassToken(user: User) {
     const payload = {
       sub: user.user_id,
+      accountType: user.accountType,
       type: 'reset',
     };
 
