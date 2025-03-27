@@ -204,6 +204,12 @@ export class AuthController {
     }
   }
 
+  /**
+   * Forgot Password - Send password reset email
+   * @param email
+   * @returns Success message
+   * @throws HttpException
+   */
   @Post('/forgot-password')
   @Public()
   @ApiResponse({ status: 200, description: 'Password reset email sent' })
@@ -247,6 +253,30 @@ export class AuthController {
       throw new HttpException(
         ResponseUtil.error(
           typedError.message || 'Failed to reset password',
+          typedError.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        ),
+        typedError.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // send email to user to verify email
+  @Post('/send-verify-email')
+  @Public()
+  @ApiResponse({
+    status: 200,
+    description: 'Verfication Email sent successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Failed to send email' })
+  async sendVerifyEmail(@Body('email') email: string) {
+    try {
+      await this.authService.sendVerificationEmail(email);
+      return ResponseUtil.success('Verification email sent successfully', null);
+    } catch (error) {
+      const typedError = error as CustomError;
+      throw new HttpException(
+        ResponseUtil.error(
+          typedError.message || 'Failed to send verification email',
           typedError.status || HttpStatus.INTERNAL_SERVER_ERROR,
         ),
         typedError.status || HttpStatus.INTERNAL_SERVER_ERROR,

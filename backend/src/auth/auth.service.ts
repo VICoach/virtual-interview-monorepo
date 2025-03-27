@@ -12,7 +12,6 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../users/entities/user.entity';
-import { v4 as uuidv4 } from 'uuid';
 import { MailerService } from '../mail/mail.service';
 
 @Injectable()
@@ -22,7 +21,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly mailerService: MailerService, // Inject MailerService
+    private readonly mailerService: MailerService,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -84,17 +83,15 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 12);
-    const verifyToken: string = uuidv4(); // Generate a unique verification token
 
     const user = await this.usersService.createUser({
       ...registerDto,
       password: hashedPassword,
-      verify_token: verifyToken,
       email_confirmed: false,
     });
 
-    // Send verification email using SendGrid
-    await this.mailerService.sendVerificationEmail(user.email, verifyToken);
+    // Send verification email and handle token generation
+    await this.sendVerificationEmail(user.email);
 
     const accessToken = this.generateAccessToken(user);
     return {
@@ -104,8 +101,29 @@ export class AuthService {
   }
 
   async verifyEmail(token: string) {
+    const payload = this.jwtService.verify<{
+      sub: number;
+      type: string;
+      exp: number;
+    }>(token, {
+      secret: this.configService.get('JWT_EMAIL_VERIFICATION_SECRET'),
+    });
+
+    if (payload.type !== 'email-verification') {
+      throw new BadRequestException('Invalid verification token');
+    }
+
+    // Check if token is expired
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    if (payload.exp < currentTimestamp) {
+      throw new BadRequestException('Verification link expired.');
+    }
+
     const user = await this.prismaService.user.findFirst({
-      where: { verify_token: token },
+      where: {
+        user_id: payload.sub,
+        verify_token: token,
+      },
     });
 
     if (!user) {
@@ -220,6 +238,20 @@ export class AuthService {
     newPassword: string,
     confirmPassword: string,
   ) {
+    const payload = this.jwtService.verify<{
+      sub: number;
+      type: string;
+      exp: number;
+    }>(token, {
+      secret: this.configService.get('JWT_EMAIL_VERIFICATION_SECRET'),
+    });
+
+    // Check if token is expired
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    if (payload.exp < currentTimestamp) {
+      throw new BadRequestException('Verification link expired.');
+    }
+
     const user = await this.prismaService.user.findFirst({
       where: { reset_pass_token: token },
     });
@@ -252,10 +284,28 @@ export class AuthService {
     });
   }
 
+  async sendVerificationEmail(email: string) {
+    const user = await this.usersService.findUserByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const verifyToken = this.generateVerificationToken(user);
+
+    await this.usersService.updateUser(user.user_id, {
+      ...user,
+      verify_token: verifyToken,
+    });
+
+    await this.mailerService.sendVerificationEmail(user.email, verifyToken);
+  }
+
   private generateAccessToken(user: User) {
     const payload = {
       sub: user.user_id,
       accountType: user.accountType,
+      type: 'access',
     };
     return this.jwtService.sign(payload, {
       expiresIn: this.configService.get('JWT_ACCESS_SECRET_EXPIRES_IN'),
@@ -285,6 +335,19 @@ export class AuthService {
     return this.jwtService.sign(payload, {
       expiresIn: this.configService.get('JWT_RESET_PASS_SECRET_EXPIRES_IN'),
       secret: this.configService.get('JWT_RESET_PASS_SECRET'),
+    });
+  }
+
+  private generateVerificationToken(user: User): string {
+    const payload = {
+      sub: user.user_id,
+      accountType: user.accountType,
+      type: 'email-verification',
+    };
+
+    return this.jwtService.sign(payload, {
+      expiresIn: this.configService.get('JWT_EMAIL_VERIFICATION_EXPIRES_IN'),
+      secret: this.configService.get('JWT_EMAIL_VERIFICATION_SECRET'),
     });
   }
 
