@@ -87,6 +87,9 @@ export class UsersController {
       return ResponseUtil.success('User found successfully', transformedUser);
     } catch (error) {
       const typedError = error as CustomError;
+      if (typedError instanceof NotFoundException) {
+        throw typedError;
+      }
       throw new HttpException(
         typedError.message || 'Failed to find user',
         typedError.status || HttpStatus.INTERNAL_SERVER_ERROR,
@@ -125,6 +128,9 @@ export class UsersController {
       return ResponseUtil.success('User updated successfully', transformedUser);
     } catch (error) {
       const typedError = error as CustomError;
+      if (typedError instanceof NotFoundException) {
+        throw typedError;
+      }
       throw new HttpException(
         typedError.message || 'Failed to update user',
         typedError.status || HttpStatus.INTERNAL_SERVER_ERROR,
@@ -153,6 +159,9 @@ export class UsersController {
       return ResponseUtil.success('User deleted successfully', transformedUser);
     } catch (error) {
       const typedError = error as CustomError;
+      if (typedError instanceof NotFoundException) {
+        throw typedError;
+      }
       throw new HttpException(
         typedError.message || 'Failed to delete user',
         typedError.status || HttpStatus.INTERNAL_SERVER_ERROR,
@@ -183,6 +192,9 @@ export class UsersController {
       );
     } catch (error) {
       const typedError = error as CustomError;
+      if (typedError instanceof NotFoundException) {
+        throw typedError;
+      }
       throw new HttpException(
         typedError.message || 'Failed to fetch users',
         typedError.status || HttpStatus.INTERNAL_SERVER_ERROR,

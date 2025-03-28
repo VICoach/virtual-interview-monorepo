@@ -26,8 +26,11 @@ export class UsersRepository {
    * Find a user by email
    */
   async findUserByEmail(email: string): Promise<User | null> {
+    if (!email) {
+      return null;
+    }
     const user = await this.prisma.user.findUnique({
-      where: { email },
+      where: { email: email },
     });
     return user ? new User(user) : null; // Map to User instance
   }
