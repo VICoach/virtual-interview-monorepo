@@ -31,27 +31,27 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="max-w-screen relative flex min-h-screen items-center justify-center">
+    <div className="max-w-screen relative min-h-screen">
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="absolute bottom-20 left-0 flex h-screen w-full items-center justify-center gap-4 sm:left-20 sm:gap-12 md:left-24 md:gap-16 lg:left-32 lg:gap-10 xl:left-44 xl:gap-16"
+        className="mt-8 flex flex-col items-center justify-center gap-0 rounded-2xl bg-[#97F8E442] p-8 md:absolute md:left-[32%] md:top-[10%] md:flex-row md:gap-10 lg:left-[35%] xl:left-[40%] xl:gap-20"
       >
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="flex w-24 flex-col items-center sm:w-32 lg:w-52 xl:w-60"
+          className="flex w-full flex-col items-center md:max-w-60"
         >
           <Image
             src="/logo.png"
             alt="Logo"
-            width={180}
-            height={180}
-            className="mb-5 md:mb-10"
+            width={200}
+            height={200}
+            className="mb-5"
           />
-          <h1 className="w-24 font-[Sansita] text-xs font-extrabold uppercase text-primary-500 sm:w-40 sm:text-lg lg:w-52 lg:text-2xl xl:w-60 xl:text-3xl">
+          <h1 className="w-full text-center font-[Sansita] text-3xl font-extrabold uppercase text-primary-500 md:text-2xl xl:text-3xl">
             Welcome back! We have missed you
           </h1>
         </motion.div>
@@ -59,11 +59,11 @@ const LoginPage = () => {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1.5 }}
-          className="w-full max-w-52 md:max-w-60 lg:max-w-72 xl:max-w-80"
+          className="w-full lg:w-64 xl:w-72"
         >
           <Form {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
-              <div className="mt-5 flex flex-col justify-between">
+              <div className="flex flex-col justify-between">
                 <div className="mt-4 space-y-4">
                   <CustomFormField
                     name="email"
