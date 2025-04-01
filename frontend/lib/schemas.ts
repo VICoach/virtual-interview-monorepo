@@ -26,6 +26,7 @@ export const userRegistrationSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
+    path: ["confirmPassword"],
   });
 export type UserRegistrationFormData = z.infer<typeof userRegistrationSchema>;
 // User Login Schema
