@@ -5,10 +5,10 @@ import { toast } from "sonner";
 const customBaseQuery = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
-  extraOptions: any
+  extraOptions: any,
 ) => {
   const baseQuery = fetchBaseQuery({
-    baseUrl: "http://localhost:4000",
+    baseUrl: "http://localhost:3000/api",
     prepareHeaders: async (headers) => {
       const token = localStorage.getItem("token");
       if (token) {
@@ -59,8 +59,68 @@ const customBaseQuery = async (
 export const api = createApi({
   baseQuery: customBaseQuery,
   reducerPath: "api",
-  tagTypes: [],
-  endpoints: (builder) => ({}),
+  tagTypes: ["User"],
+  endpoints: (builder) => ({
+    /*
+    =================
+    USER ENDPOINTS
+    =================
+    */
+    registerUser: builder.mutation({
+      query: (userData) => ({
+        url: "/auth/register",
+        method: "POST",
+        body: userData,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    loginUser: builder.mutation({
+      query: (userData) => ({
+        url: "/auth/login",
+        method: "POST",
+        body: userData,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    confirmEmail: builder.mutation({
+      query: (token) => ({
+        url: "/auth/confirm-email",
+        method: "POST",
+        body: { token },
+      }),
+      invalidatesTags: ["User"],
+    }),
+    forgotPassword: builder.mutation({
+      query: (email) => ({
+        url: "/auth/forgot-password",
+        method: "POST",
+        body: { email },
+      }),
+      invalidatesTags: ["User"],
+    }),
+    resetPassword: builder.mutation({
+      query: ({ token, password }) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        body: { token, password },
+      }),
+      invalidatesTags: ["User"],
+    }),
+    getUser: builder.query({
+      query: () => ({
+        url: "/auth/user",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
+  }),
 });
 
-export const {} = api;
+export const {
+  useRegisterUserMutation,
+  useLoginUserMutation,
+  useConfirmEmailMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useGetUserQuery,
+} = api;
