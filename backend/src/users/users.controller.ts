@@ -21,6 +21,12 @@ import { plainToInstance } from 'class-transformer';
 import { ResponseUtil } from '../utils/reponse.util';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/auth.guard';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiParam,
+  ApiOperation,
+} from '@nestjs/swagger';
 
 interface CustomError {
   message: string;
@@ -30,19 +36,21 @@ interface CustomError {
 @ApiTags('Users')
 @Controller('users')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth('access-token')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  /**
-   * Create a new user
-   * @param createUserDto
-   * @returns User
-   * @throws HttpException
-   */
   @Post()
   @UsePipes(new ValidationPipe())
-  @ApiResponse({ status: 201, description: 'User successfully created' })
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiBody({ type: CreateUserDto })
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully created',
+    type: User,
+  })
   @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async createUser(@Body() createUserDto: CreateUserDto) {
     try {
       const user = await this.usersService.createUser(createUserDto);
@@ -61,16 +69,16 @@ export class UsersController {
     }
   }
 
-  /**
-   * Find a user by ID
-   * @param id
-   * @returns User
-   * @throws HttpException
-   * @throws NotFoundException
-   */
   @Get(':id')
-  @ApiResponse({ status: 200, description: 'User found successfully' })
+  @ApiOperation({ summary: 'Find a user by ID' })
+  @ApiParam({ name: 'id', description: 'User ID', type: 'number' })
+  @ApiResponse({
+    status: 200,
+    description: 'User found successfully',
+    type: User,
+  })
   @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async findUserById(@Param('id') id: string) {
     try {
       const userId = parseInt(id, 10);
@@ -97,18 +105,18 @@ export class UsersController {
     }
   }
 
-  /**
-   * Update a user
-   * @param id
-   * @param updateUserDto
-   * @returns User
-   * @throws HttpException
-   * @throws NotFoundException
-   */
   @Patch(':id')
   @UsePipes(new ValidationPipe())
-  @ApiResponse({ status: 200, description: 'User updated successfully' })
+  @ApiOperation({ summary: 'Update a user' })
+  @ApiParam({ name: 'id', description: 'User ID', type: 'number' })
+  @ApiBody({ type: UpdateUserDto })
+  @ApiResponse({
+    status: 200,
+    description: 'User updated successfully',
+    type: User,
+  })
   @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -138,15 +146,16 @@ export class UsersController {
     }
   }
 
-  /**
-   * Delete a user
-   * @param id
-   * @returns User
-   * @throws HttpException
-   */
   @Delete(':id')
-  @ApiResponse({ status: 200, description: 'User deleted successfully' })
+  @ApiOperation({ summary: 'Delete a user' })
+  @ApiParam({ name: 'id', description: 'User ID', type: 'number' })
+  @ApiResponse({
+    status: 200,
+    description: 'User deleted successfully',
+    type: User,
+  })
   @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async deleteUser(@Param('id') id: string) {
     try {
       const userId = parseInt(id, 10);
@@ -169,15 +178,15 @@ export class UsersController {
     }
   }
 
-  /**
-   * Find all users
-   * @returns User[]
-   * @throws HttpException
-   * @throws NotFoundException
-   */
   @Get()
-  @ApiResponse({ status: 200, description: 'Users fetched successfully' })
+  @ApiOperation({ summary: 'Find all users' })
+  @ApiResponse({
+    status: 200,
+    description: 'Users fetched successfully',
+    type: [User],
+  })
   @ApiResponse({ status: 404, description: 'No users found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async findAllUsers() {
     try {
       const users = await this.usersService.findAllUsers();
