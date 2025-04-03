@@ -23,34 +23,22 @@ export class UsersRepository {
   }
 
   /**
-   * Find a user by email
+   * Generic find user by a specific field
+   * @param field The field to search by (email, user_id, username)
+   * @param value The value to search for
    */
-  async findUserByEmail(email: string): Promise<User | null> {
-    if (!email) {
+  async findBy<T>(field: string, value: T): Promise<User | null> {
+    if (value === null || value === undefined) {
       return null;
     }
-    const user = await this.prisma.user.findUnique({
-      where: { email: email },
-    });
-    return user ? new User(user) : null; // Map to User instance
-  }
 
-  /**
-   * Find a user by ID
-   */
-  async findUserById(id: number): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
-      where: { user_id: id },
-    });
-    return user ? new User(user) : null; // Map to User instance
-  }
-
-  /**
-   * Find a user by username
-   */
-  async findUserByUserName(username: string): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { username },
+      where:
+        field === 'user_id'
+          ? { user_id: Number(value) }
+          : field === 'username'
+            ? { username: String(value) }
+            : { email: String(value) },
     });
     return user ? new User(user) : null; // Map to User instance
   }
