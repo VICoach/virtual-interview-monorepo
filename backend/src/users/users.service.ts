@@ -20,7 +20,8 @@ export class UsersService {
    * @throws ConflictException
    */
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const existingUser = await this.usersRepository.findUserByEmail(
+    const existingUser = await this.usersRepository.findBy(
+      'email',
       createUserDto.email,
     );
     if (existingUser) {
@@ -43,7 +44,7 @@ export class UsersService {
    * @throws NotFoundException
    */
   async findUserByEmail(email: string): Promise<User | null> {
-    return await this.usersRepository.findUserByEmail(email);
+    return await this.usersRepository.findBy('email', email);
   }
 
   /**
@@ -53,7 +54,7 @@ export class UsersService {
    * @throws NotFoundException
    */
   async findUserById(id: number): Promise<User | null> {
-    return await this.usersRepository.findUserById(id);
+    return await this.usersRepository.findBy('user_id', id);
   }
 
   /**
@@ -62,7 +63,7 @@ export class UsersService {
    * @returns User
    */
   async findUserByUserName(username: string): Promise<User | null> {
-    return await this.usersRepository.findUserByUserName(username);
+    return await this.usersRepository.findBy('username', username);
   }
 
   /**
@@ -73,13 +74,14 @@ export class UsersService {
    * @throws NotFoundException
    */
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.usersRepository.findUserById(id);
+    const user = await this.usersRepository.findBy('user_id', id);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
     if (updateUserDto.email) {
-      const existingUser = await this.usersRepository.findUserByEmail(
+      const existingUser = await this.usersRepository.findBy(
+        'email',
         updateUserDto.email,
       );
       if (existingUser && existingUser.user_id !== id) {
@@ -97,7 +99,7 @@ export class UsersService {
    * @throws NotFoundException
    */
   async deleteUser(id: number): Promise<User> {
-    const user = await this.usersRepository.findUserById(id);
+    const user = await this.usersRepository.findBy('user_id', id);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
