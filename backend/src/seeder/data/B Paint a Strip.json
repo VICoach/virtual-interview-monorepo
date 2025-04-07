@@ -1,0 +1,26 @@
+{
+    "problem": {
+        "title": "Paint a Strip",
+        "description": "You have an array of zeros a 1 , a 2 , … , a n of length n . You can perform two types of operations on it: Choose an index i such that 1 ≤ i ≤ n and a i = 0 , and assign 1 to a i ; Choose a pair of indices l and r such that 1 ≤ l ≤ r ≤ n , a l = 1 , a r = 1 , a l + … + a r ≥ ⌈ r − l + 1 2 ⌉ , and assign 1 to a i for all l ≤ i ≤ r . What is the minimum number of operations of the first type needed to make all elements of the array equal to one?",
+        "input_specification": "Each test contains multiple test cases. The first line contains the number of test cases t (1≤t≤104). The description of the test cases follows.The only line of each test case contains one integer n (1≤n≤105) — the length of the array.Note that there is no limit on the sum of n over all test cases.",
+        "output_specification": "For each test case, print one integer — the minimum number of needed operations of first type.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "constructive algorithms",
+            "greedy",
+            "math"
+        ],
+        "examples": [
+            {
+                "input": "4\n1\n2\n4\n20",
+                "output": "1\n2\n2\n4\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2040B - Paint a StripAt each moment of time, the array contains a number of non-intersecting segments consisting only of ones. Using an operation of the first type can increase the number of these segments by 1. Using an operation of the second type decreases the number of these segments by x - 1, where x — is the number of segments that this operation covers. Therefore, the number of operations of the second type is no more than the number of operations of the first type minus 1.The optimal strategy — is to perform one operation of the first type, and then alternate operations of the first and second types, increasing the number of ones from x to 2 * (x + 1) on each such pair of operations. There is no point in doing more operations of the first type on the prefix of operations, since we still must cover no more than two segments of ones with operations of the second type; otherwise, we will reduce the possible number of operations of the second type.",
+        "code": "tt = int(input())\nfor _ in range(tt):\n    n = int(input())\n    ans = 1\n    cur = 1\n    while True:\n        if cur >= n:\n            print(ans)\n            break\n        ans += 1\n        cur = cur * 2 + 2"
+    }
+}

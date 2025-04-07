@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Coin Transformation",
+        "description": "Initially, you have a coin with value n . You can perform the following operation any number of times (possibly zero): transform one coin with value x , where x is greater than 3 ( x > 3 ), into two coins with value ⌊ x 4 ⌋ . What is the maximum number of coins you can have after performing this operation any number of times?",
+        "input_specification": "The first line contains one integer tt (1≤t≤1041≤t≤104) — the number of test cases.Each test case consists of one line containing one integer nn (1≤n≤10181≤n≤1018).",
+        "output_specification": "For each test case, print one integer — the maximum number of coins you can have after performing the operation any number of times.",
+        "time_limit": "2 seconds",
+        "memory_limit": "512 megabytes",
+        "tags": [
+            "brute force",
+            "math"
+        ],
+        "examples": [
+            {
+                "input": "4\n1\n5\n16\n1000000000000000000",
+                "output": "1\n2\n4\n536870912\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2043A - Coin TransformationLet's try to solve this problem \"naively\": obviously, while we have at least one coin with value >3>3, we should transform it, since it increases the number of coins we get. We can simulate this process, but the number of transformations we get might be really large, so we need to speed this up.Let's make it faster the following way: instead of transforming just one coin, we will transform all coins at once. So, after one operation, we will have 22 coins with value ⌊x4⌋⌊x4⌋; after two operations, we will have 44 coins with value ⌊x16⌋⌊x16⌋ each, and so on. This can be implemented using a simple while-loop: while the value of our coins is greater than 33, we divide it by 44 and double the number of coins. This solution works in O(logn)O(log⁡n).It is also possible to derive a formula for the answer: the number of times we need to divide a number by 44 so it becomes less than 44 is ⌊log4n⌋⌊log4⁡n⌋, and the number of coins we will get is 22 to the power of that expression. However, you must be very careful with this approach, because it can have severe precision issues due to the fact that standard logarithm functions work with floating-point numbers, so they are imprecise. You should use some way to calculate ⌊log4n⌋⌊log4⁡n⌋ without floating-point calculations; for example, iterating (or binary searching) on the power of 44 you need to divide the number by so that it becomes less than 44.",
+        "code": "t = int(input())\nfor i in range(t):\n    n = int(input())\n    ans = 1\n    while n > 3:\n        n //= 4\n        ans *= 2\n    print(ans)"
+    }
+}

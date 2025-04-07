@@ -1,0 +1,26 @@
+{
+    "problem": {
+        "title": "Sharky Surfing",
+        "description": "Mualani loves surfing on her sharky surfboard! Mualani's surf path can be modeled by a number line. She starts at position 1 , and the path ends at position L . When she is at position x with a jump power of k , she can jump to any integer position in the interval [ x , x + k ] . Initially, her jump power is 1 . However, her surf path isn't completely smooth. There are n hurdles on her path. Each hurdle is represented by an interval [ l , r ] , meaning she cannot jump to any position in the interval [ l , r ] . There are also m power-ups at certain positions on the path. Power-up i is located at position x i and has a value of v i . When Mualani is at position x i , she has the option to collect the power-up to increase her jump power by v i . There may be multiple power-ups at the same position. When she is at a position with some power-ups, she may choose to take or ignore each individual power-up. No power-up is in the interval of any hurdle. What is the minimum number of power-ups she must collect to reach position L to finish the path? If it is not possible to finish the surf path, output − 1 .",
+        "input_specification": "The first line contains an integer tt (1≤t≤1041≤t≤104) — the number of test cases.The first line of each test case contains three integers nn, mm, and LL (1≤n,m≤2⋅105,3≤L≤1091≤n,m≤2⋅105,3≤L≤109) — the number of hurdles, the number of power-ups, and the position of the end.The following nn lines contain two integers lili and riri (2≤li≤ri≤L−12≤li≤ri≤L−1) — the bounds of the interval for the ii'th hurdle. It is guaranteed that ri+1<li+1ri+1<li+1 for all 1≤i<n1≤i<n (i.e. all hurdles are non-overlapping, sorted by increasing positions, and the end point of a previous hurdle is not consecutive with the start point of the next hurdle).The following mm lines contain two integers xixi and vivi (1≤xi,vi≤L1≤xi,vi≤L) — the position and the value for the ii'th power-up. There may be multiple power-ups with the same xx. It is guaranteed that xi≤xi+1xi≤xi+1 for all 1≤i<m1≤i<m (i.e. the power-ups are sorted by non-decreasing position) and no power-up is in the interval of any hurdle.It is guaranteed the sum of nn and the sum of mm over all test cases does not exceed 2⋅1052⋅105.",
+        "output_specification": "For each test case, output the minimum number of power-ups she must collect to reach position LL. If it is not possible, output −1−1.",
+        "time_limit": "3 seconds",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "data structures",
+            "greedy",
+            "two pointers"
+        ],
+        "examples": [
+            {
+                "input": "4\n2 5 50\n7 14\n30 40\n2 2\n3 1\n3 5\n18 2\n22 32\n4 3 50\n4 6\n15 18\n20 26\n34 38\n1 2\n8 2\n10 2\n1 4 17\n10 14\n1 6\n1 2\n1 2\n16 9\n1 2 10\n5 9\n2 3\n2 2",
+                "output": "4\n-1\n1\n2\n"
+            }
+        ],
+        "difficulty": "medium"
+    },
+    "solution": {
+        "description": "Process from earliest to latest. Maintain a priority queue of power-ups left so far. If Mualani meets a power-up, add it to the priority queue. Otherwise (Mualani meets a hurdle), take power-ups in the priority queue from strongest to weakest until you can jump over the hurdle. This guarantees that each time Mualani jumps over a hurdle, she takes the minimum number of power-ups necessary. Time complexity is O((n+m)logm)O((n+m)log⁡m), where O(logm)O(log⁡m) is from the priority queue.Note that the hurdle intervals are inclusive. If there is a hurdle at [l,r][l,r], she must jump from position l−1l−1 to r+1r+1.",
+        "code": "import sys\nimport heapq\ninput = sys.stdin.readline\nfor _ in range(int(input())):\n    n,m,L = map(int,input().split())\n    EV = []\n    for _ in range(n):\n        EV.append((*list(map(int,input().split())),1))\n    for _ in range(m):\n        EV.append((*list(map(int,input().split())),0))\n    EV.sort()\n    k = 1\n    pwr = []\n    for a,b,t in EV:\n        if t == 0:\n            heapq.heappush(pwr,-b)\n        else:\n            while pwr and k < b-a + 2:\n                k -= heapq.heappop(pwr)\n            if k < b-a + 2:\n                print(-1)\n                break\n    else:\n        print(m-len(pwr))"
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Digits",
+        "description": "Artem wrote the digit d on the board exactly n ! times in a row. So, he got the number d d d d d d … d d d (exactly n ! digits). Now he is curious about which odd digits from 1 to 9 divide the number written on the board.",
+        "input_specification": "The first line contains a single integer t (1≤t≤100) — the number of test cases. The next t test cases follow.Each test case consists of a single line containing two integers n and d (2≤n≤109, 1≤d≤9).",
+        "output_specification": "For each test case, output the odd digits in ascending order that divide the number written on the board.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "math",
+            "number theory"
+        ],
+        "examples": [
+            {
+                "input": "3\n2 6\n7 1\n8 5",
+                "output": "1 3 \n1 3 7 9 \n1 3 5 7 9 \n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2043B - DigitsThere are several ways to solve this problem. I will describe two of them.Using divisibility rules (a lot of math involved):We can try divisibility rules for all odd integers from 11 to 99 and find out whether they work for our numbers: 11 is always the answer, since every integer is divisible by 11: a number is divisible by 33 iff its sum of digits is divisible by 33. Since our number consists of n!n! digits dd, then either n!n! or dd should be divisible by 33; so, n≥3n≥3 or dmod3=0dmod3=0; a number is divisible by 99 iff its sum of digits is divisible by 99. This is a bit trickier than the case with 33, because it is possible that both n!n! and dd are divisible by 33 (not 99), and it makes the sum of digits divisible by 99; a number is divisible by 55 iff its last digit is 55 or 00. Just check that d=5d=5, and that's it; probably the trickiest case: a number is divisible by 77 iff, when this number is split into blocks of 33 digits (possibly with the first block shorter than 33 digits), the sign-alternating sum of these blocks is divisible by 77. Like, 12345691234569 is divisible by 77 because (1−234+569)(1−234+569) is divisible by 77. If we apply this rule to our numbers from the problem, we can use the fact that when n≥3n≥3, the number can be split into several blocks of length 66, and each such block changes the alternating sum by 00. So, if n≥3n≥3 or d=7d=7, our number is divisible by 77. Almost brute force (much less math involved):First, we actually need a little bit of math. If you take a number consisting of n!n! digits equal to dd, it is always divisible by (n−1)!(n−1)! digits equal to dd. This is because, if you write some integer repeatedly, the resulting number will be divisible by the original number, like, for example, 424242424242 is divisible by 4242.So, if for some n=kn=k, the number is divisible by some digit, then for n=k+1n=k+1, the number will also be divisible for some digit.This means that there exists an integer mm such that for all integers n≥mn≥m, the results are the same if you use the same digit dd. So, we can set n=min(n,m)n=min(n,m), and if mm is small enough, use brute force.What is the value of mm? The samples tell us that the number consisting of 7!7! ones is divisible by 11, 33, 77 and 99 (and divisibility by 55 depends only on dd), so you can actually use m=7m=7. It is also possible to reduce mm to 66, but this is not required.So, the solution is: reduce nn to something like 77 if it is greater than 77, then use brute force. You can either calculate the remainder of a big number modulo small number using a for-loop, or, if you code in Java or Python, use built-in big integers (just be careful with Python, modern versions of it forbid some operations with integers longer than 43004300 digits, you might need to override that behavior).",
+        "code": "import sys\n \nsys.set_int_max_str_digits(6000)\n \ndef fact(x):\n    if x == 0:\n        return 1\n    return x * fact(x - 1)\n \nt = int(input())\nfor i in range(t):\n    n, k = map(int, input().split())\n    n = min(n, 7)\n    s = int(str(k) * fact(n))\n    for i in range(1, 10, 2):\n        if s % i == 0:\n            print(i, end = ' ')\n    print()"
+    }
+}

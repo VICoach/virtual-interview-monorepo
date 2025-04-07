@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Set",
+        "description": "You are given a positive integer k and a set S of all integers from l to r (inclusive). You can perform the following two-step operation any number of times (possibly zero): First, choose a number x from the set S , such that there are at least k multiples of x in S (including x itself); Then, remove x from S (note that nothing else is removed). Find the maximum possible number of operations that can be performed.",
+        "input_specification": "Each test contains multiple test cases. The first line of the input contains a single integer tt (1≤t≤1041≤t≤104) — the number of test cases. The description of test cases follows.The only line of each test case contains three integers ll, rr, and kk (1≤l≤r≤1091≤l≤r≤109, 1≤k≤r−l+11≤k≤r−l+1) — the minimum integer in SS, the maximum integer in SS, and the parameter kk.",
+        "output_specification": "For each test case, output a single integer — the maximum possible number of operations that can be performed.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "greedy",
+            "math"
+        ],
+        "examples": [
+            {
+                "input": "8\n3 9 2\n4 9 1\n7 9 2\n2 10 2\n154 220 2\n147 294 2\n998 24435 3\n1 1000000000 2",
+                "output": "2\n6\n0\n4\n0\n1\n7148\n500000000\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "We can delete the numbers from small to large. Thus, previously removed numbers will not affect future choices (if x<y, then x cannot be a multiple of y). So an integer x (l≤x≤r) can be removed if and only if k⋅x≤r, that is, x≤⌊rk⌋. The answer is max(⌊rk⌋−l+1,0).Time complexity: O(1) per test case.",
+        "code": "for _ in range(int(input())):\n    l, r, k = map(int, input().split())\n    print(max(r // k - l + 1, 0))"
+    }
+}

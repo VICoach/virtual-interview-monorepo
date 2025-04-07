@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Game of Division",
+        "description": "You are given an array of integers a 1 , a 2 , … , a n of length n and an integer k . Two players are playing a game. The first player chooses an index 1 ≤ i ≤ n . Then the second player chooses a different index 1 ≤ j ≤ n , i ≠ j . The first player wins if | a i − a j | is not divisible by k . Otherwise, the second player wins. We play as the first player. Determine whether it is possible to win, and if so, which index i should be chosen. The absolute value of a number x is denoted by | x | and is equal to x if x ≥ 0 , and − x otherwise.",
+        "input_specification": "Each test contains multiple test cases. The first line of input contains a single integer t (1≤t≤100) — the number of test cases. The description of the test cases follows.The first line of each test case contains two integers n and k (1≤n≤100; 1≤k≤100) — the length of the array and the number k.The second line of each test case contains n integers a1,a2,…,an (1≤ai≤100) — the elements of the array a.",
+        "output_specification": "For each test case, if it is impossible for the first player to win, print \"NO\" (without quotes).Otherwise, print \"YES\" (without quotes) and on the next line the appropriate index 1≤i≤n. If there are multiple solutions, print any of them.You can output each letter in any case (lowercase or uppercase). For example, the strings \"yEs\", \"yes\", \"Yes\" and \"YES\" will be recognized as a positive answer.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "games",
+            "math"
+        ],
+        "examples": [
+            {
+                "input": "7\n3 2\n1 2 3\n4 2\n1 2 4 5\n5 3\n10 7 3 4 5\n5 3\n1 31 15 55 36\n2 1\n17 17\n2 2\n17 18\n1 3\n6",
+                "output": "YES\n2\nNO\nYES\n3\nNO\nNO\nYES\n2\nYES\n1\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2040A - Game of Division|x−y| is divisible by k if and only if xmodk=ymodk. Let's split all numbers into groups according to the value xmodk. The second player wins if he chooses a number from the same group. This means that the first player must choose the number that is the only one in its group.",
+        "code": "for _ in range(int(input())):\n    n, k = map(int, input().split())\n    a = list(map(int, input().split()))\n    b = [[] for _ in range(k)]\n    for i in range(0, n):\n        x = a[i]\n        b[x % k].append(i + 1)\n    res = -1\n    for i in range(k):\n        if len(b[i]) == 1:\n            res = b[i][0]\n            break\n    if res == -1:\n        print(\"NO\")\n    else:\n        print(\"YES\\n\" + str(res))"
+    }
+}

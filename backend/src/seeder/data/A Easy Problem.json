@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Easy Problem",
+        "description": "Cube is given an integer n . She wants to know how many ordered pairs of positive integers ( a , b ) there are such that a = n − b . Since Cube is not very good at math, please help her!",
+        "input_specification": "The first line contains an integer t (1≤t≤99) — the number of test cases.The only line of each test case contains an integer n (2≤n≤100).",
+        "output_specification": "For each test case, output the number of ordered pairs (a,b) on a new line.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "brute force",
+            "math"
+        ],
+        "examples": [
+            {
+                "input": "3\n2\n4\n6",
+                "output": "1\n3\n5\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "For any n, Cube can set a = any integer between 1 and n−1 inclusive, and set b=n−a. a cannot be less than 1, because then it would be non-positive, and a cannot be greater than n−1, because then b would be less than 1, which would make it non-positive. Therefore the answer is just n−1 for all n.",
+        "code": "input = sys.stdin.readline\nfor _ in range(int(input())):\n    print(int(input())-1)"
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "problem": {
+        "title": "Medians",
+        "description": "You are given an array a = [ 1 , 2 , … , n ] , where n is odd , and an integer k . Your task is to choose an odd positive integer m and to split a into m subarrays † b 1 , b 2 , … , b m such that: Each element of the array a belongs to exactly one subarray. For all 1 ≤ i ≤ m , | b i | is odd , i.e., the length of each subarray is odd. median ⁡ ( [ median ⁡ ( b 1 ) , median ⁡ ( b 2 ) , … , median ⁡ ( b m ) ] ) = k , i.e., the median ‡ of the array of medians of all subarrays must equal k . median ⁡ ( c ) denotes the median of the array c . † A subarray of the array a of length n is the array [ a l , a l + 1 , … , a r ] for some integers 1 ≤ l ≤ r ≤ n . ‡ A median of the array of odd length is the middle element after the array is sorted in non-decreasing order. For example: median ⁡ ( [ 1 , 2 , 5 , 4 , 3 ] ) = 3 , median ⁡ ( [ 3 , 2 , 1 ] ) = 2 , median ⁡ ( [ 2 , 1 , 2 , 1 , 2 , 2 , 2 ] ) = 2 .",
+        "input_specification": "Each test consists of multiple test cases. The first line contains a single integer tt (1≤t≤50001≤t≤5000) — the number of test cases. The description of the test cases follows.The first line of each test case contains two integers nn and kk (1≤k≤n<2⋅1051≤k≤n<2⋅105, nn is odd) — the length of array aa and the desired median of the array of medians of all subarrays.It is guaranteed that the sum of nn over all test cases does not exceed 2⋅1052⋅105.",
+        "output_specification": "For each test case: If there is no suitable partition, output −1−1 in a single line. Otherwise, in the first line, output an odd integer mm (1≤m≤n1≤m≤n), and in the second line, output mm distinct integers p1,p2,p3,…,pmp1,p2,p3,…,pm (1=p1<p2<p3<…<pm≤n1=p1<p2<p3<…<pm≤n) — denoting the left borders of each subarray. In detail, for a valid answer [p1,p2,…,pm][p1,p2,…,pm]: b1=[ap1,ap1+1,…,ap2−1]b1=[ap1,ap1+1,…,ap2−1] b2=[ap2,ap2+1,…,ap3−1]b2=[ap2,ap2+1,…,ap3−1] …… bm=[apm,apm+1,…,an]bm=[apm,apm+1,…,an]. If there are multiple solutions, you can output any of them.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "constructive algorithms",
+            "greedy",
+            "implementation",
+            "math"
+        ],
+        "examples": [
+            {
+                "input": "4\n1 1\n3 2\n3 3\n15 8",
+                "output": "1\n1\n3\n1 2 3\n-1\n5\n1 4 7 10 13\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2032B - MediansFor n=1n=1 (and k=1k=1 as well), the obvious answer would be not partitioning anything, i.e., partition with 1 subarray being itself.For n>1n>1, we see that k=1k=1 and k=nk=n cannot yield a satisfactory construction. Proof is as follows: m=1m=1 will yield ans=⌊n+12⌋ans=⌊n+12⌋, which will never be equal to 11 or nn when n≥3n≥3. If m>1m>1, considering the case of k=1k=1, we see that median(bi)=1median⁡(bi)=1 iff i≥2i≥2, and since the original array aa is an increasingly-sorted permutation, we can conclude that median(b1)<1median⁡(b1)<1. This is not possible. Similarly, k=nk=n also doesn't work with m>1m>1, as it'll require median(bm)>nmedian⁡(bm)>n. Apart from these cases, any other kk can yield an answer with m=3m=3 — a prefix subarray b1b1, a middle subarray b2b2 containing kk (b2b2 will be centered at kk, of course), and a suffix subarray b3b3. This way, the answer will be median(b2)=kmedian⁡(b2)=k.The length of b2b2 can be either 11 or 33, depending on the parity of kk (so that b1b1 and b3b3 could have odd lengths). In detail: b2b2 will have length 11 (i.e., [k][k]) if kk is an even integer, and length 33 (i.e., [k−1,k,k+1][k−1,k,k+1]) if kk is an odd integer.Time complexity: O(1)O(1).",
+        "code": "class Solution:\n    hasMultipleTests = True\n\n    n: int = None\n    k: int = None\n\n    @classmethod\n    def preprocess(cls):\n        pass\n\n    @classmethod\n    def input(cls, testcase):\n        cls.n, cls.k = map(int, input().split())\n\n    @classmethod\n    def solve(cls, testcase):\n        if cls.n == 1: return(print('1\\n1'))\n\n        if cls.k in {1, cls.n}: return(print(-1))\n\n        p2, p3 = cls.k - cls.k % 2, cls.k + 1 + cls.k % 2\n        print(f'3\\n1 {p2} {p3}')\n\n# end Solution"
+    }
+}

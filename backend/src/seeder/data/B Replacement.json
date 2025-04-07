@@ -1,0 +1,26 @@
+{
+    "problem": {
+        "title": "Replacement",
+        "description": "You have a binary string ∗ s of length n , and Iris gives you another binary string r of length n − 1 . Iris is going to play a game with you. During the game, you will perform n − 1 operations on s . In the i -th operation ( 1 ≤ i ≤ n − 1 ): First, you choose an index k such that 1 ≤ k ≤ | s | − 1 and s k ≠ s k + 1 . If it is impossible to choose such an index, you lose; Then, you replace s k s k + 1 with r i . Note that this decreases the length of s by 1 . If all the n − 1 operations are performed successfully, you win. Determine whether it is possible for you to win this game. ∗ A binary string is a string where each character is either 0 or 1 .",
+        "input_specification": "Each test contains multiple test cases. The first line of the input contains a single integer tt (1≤t≤1041≤t≤104) — the number of test cases. The description of test cases follows.The first line of each test case contains a single integer nn (2≤n≤1052≤n≤105) — the length of ss.The second line contains the binary string ss of length nn (si=0si=0 or 11).The third line contains the binary string rr of length n−1n−1 (ri=0ri=0 or 11).It is guaranteed that the sum of nn over all test cases does not exceed 105105.",
+        "output_specification": "For each test case, print \"YES\" (without quotes) if you can win the game, and \"NO\" (without quotes) otherwise.You can output the answer in any case (upper or lower). For example, the strings \"yEs\", \"yes\", \"Yes\", and \"YES\" will be recognized as positive responses.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "constructive algorithms",
+            "games",
+            "strings"
+        ],
+        "examples": [
+            {
+                "input": "6\n2\n11\n0\n2\n01\n1\n4\n1101\n001\n6\n111110\n10000\n6\n010010\n11010\n8\n10010010\n0010010",
+                "output": "NO\nYES\nYES\nNO\nYES\nNO\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "Each time we do an operation, if s consists only of 0 or 1, we surely cannot find any valid indices. Otherwise, we can always perform the operation successfully. In the i-th operation, if ti=0, we actually decrease the number of 1-s by 1, and vice versa. Thus, we only need to maintain the number of 0-s and 1-s in s. If any of them falls to 0 before the last operation, the answer is NO, otherwise, the answer is YES.Time complexity: O(n) per test case.",
+        "code": "for _ in range(int(input())):\n    n = int(input())\n    s = input()\n    one = s.count(\"1\")\n    zero = s.count(\"0\")\n    ans = \"YES\"\n    for ti in input():\n        if one == 0 or zero == 0:\n            ans = \"NO\"\n            break\n        one -= 1\n        zero -= 1\n        if ti == \"1\":\n            one += 1\n        else:\n            zero += 1\n    print(ans)"
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Clockwork",
+        "description": "You have a sequence of n time clocks arranged in a line, where the initial time on the i -th clock is a i . In each second, the following happens in order: Each clock's time decreases by 1 . If any clock's time reaches 0 , you lose immediately. You can choose to move to an adjacent clock or stay at the clock you are currently on. You can reset the time of the clock you are on back to its initial value a i . Note that the above events happen in order. If the time of a clock reaches 0 in a certain second, even if you can move to this clock and reset its time during that second, you will still lose. You can start from any clock. Determine if it is possible to continue this process indefinitely without losing.",
+        "input_specification": "The first line of input contains a single integer tt (1≤t≤1041≤t≤104) — the number of test cases.For each test case, the first line contains a single integer nn (2≤n≤5⋅1052≤n≤5⋅105) — the number of time clocks.The second line contains nn integers a1,a2,…,ana1,a2,…,an (1≤ai≤1091≤ai≤109) — the initial times set on the clocks.It is guaranteed that the sum of nn over all test cases does not exceed 5⋅1055⋅105.",
+        "output_specification": "For each test case, print \"YES\" (without quotes) if it is possible to continue this process indefinitely, or \"NO\" (without quotes) otherwise.You can output \"YES\" and \"NO\" in any case (for example, strings \"yEs\", \"yes\" and \"Yes\" will be recognized as a positive response).",
+        "time_limit": "1.5 seconds",
+        "memory_limit": "512 megabytes",
+        "tags": [
+            "greedy",
+            "math"
+        ],
+        "examples": [
+            {
+                "input": "5\n2\n4 10\n2\n2 2\n3\n4 10 5\n3\n5 3 5\n5\n12 13 25 17 30",
+                "output": "YES\nNO\nNO\nYES\nYES\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2062B - ClockworkOn one hand, traveling from ii to 11 and back takes time 2(i−1)2(i−1), and traveling from ii to nn and back takes time 2(n−i)2(n−i). Therefore, it must hold that ti>2max(i−1,n−i)ti>2max(i−1,n−i).On the other hand, if this condition is satisfied, one can simply move back and forth between 11 and nn directly.",
+        "code": "for _ in range(int(input())):\n    n=int(input())\n    a=list(map(int,input().split()))\n    for i in range(n):\n        if a[i]<=max(i,n-i-1)*2:\n            print('NO')\n            break\n    else:\n        print('YES')"
+    }
+}

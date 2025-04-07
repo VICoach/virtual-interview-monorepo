@@ -1,0 +1,28 @@
+{
+    "problem": {
+        "title": "XOR and Triangle",
+        "description": "This time, the pink soldiers have given you an integer x ( x ≥ 2 ). Please determine if there exists a positive integer y that satisfies the following conditions. y is strictly less than x . There exists a non-degenerate triangle ∗ with side lengths x , y , x ⊕ y . Here, ⊕ denotes the bitwise XOR operation . Additionally, if there exists such an integer y , output any. ∗ A triangle with side lengths a , b , c is non-degenerate when a + b > c , a + c > b , b + c > a .",
+        "input_specification": "Each test contains multiple test cases. The first line contains the number of test cases t (1≤t≤2000). The description of the test cases follows. The only line of each test case contains a single integer x (2≤x≤109).",
+        "output_specification": "For each test case, print one integer on a separate line. The integer you must output is as follows: If there exists an integer y satisfying the conditions, output the value of y (1≤y<x); Otherwise, output −1. If there exist multiple integers that satisfy the conditions, you may output any.",
+        "time_limit": "2 seconds",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "bitmasks",
+            "brute force",
+            "geometry",
+            "greedy",
+            "probabilities"
+        ],
+        "examples": [
+            {
+                "input": "7\n5\n2\n6\n3\n69\n4\n420",
+                "output": "3\n-1\n5\n-1\n66\n-1\n320\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2074C - XOR and TriangleLet us interpret the triangle inequality in terms of bitmasking. Then, we get the following. (One is omitted as it is implied in the constraints.) x+y>x⊕y, (x⊕y)+2(x&y)>x⊕y, x&y>0; y+(x⊕y)>x, y+(x+y)−2(x&y)>x, y>x&y. In other words, y satisfies the following conditions. y contains at least one bit turned on in x; y contains at least one bit not turned on in x. The smallest values of y that satisfy this have exactly two bits turned on; one in x and one not in it. Therefore, if one such value exists, then a smallest one can be found in O(log2x) time by simply bruteforcing all integers with two bits turned on. If any one of them is less than x, then it satisfies all conditions.The problem has been solved in O(log2x) per test case. While there exist ways to solve it in O(logx) per test case, they were not required.",
+        "code": "t = int(input())\nfor _ in range(t):\n    x = int(input())\n    ans = -1\n    for i in range(30):\n        for j in range(30):\n            y = (1 << i) | (1 << j)\n            if y < x and x + y > (x ^ y) and y + (x ^ y) > x:\n                ans = y\n    print(ans)"
+    }
+}

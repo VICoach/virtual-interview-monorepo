@@ -1,0 +1,27 @@
+{
+    "problem": {
+        "title": "Trinity",
+        "description": "You are given an array a of n elements a 1 , a 2 , … , a n . You can perform the following operation any number (possibly 0 ) of times: Choose two integers i and j , where 1 ≤ i , j ≤ n , and assign a i := a j . Find the minimum number of operations required to make the array a satisfy the condition: For every pairwise distinct triplet of indices ( x , y , z ) ( 1 ≤ x , y , z ≤ n , x ≠ y , y ≠ z , x ≠ z ), there exists a non-degenerate triangle with side lengths a x , a y and a z , i.e. a x + a y > a z , a y + a z > a x and a z + a x > a y .",
+        "input_specification": "Each test consists of multiple test cases. The first line contains a single integer tt (1≤t≤1041≤t≤104) — the number of test cases. The description of the test cases follows.The first line of each test case contains a single integer nn (3≤n≤2⋅1053≤n≤2⋅105) — the number of elements in the array aa.The second line of each test case contains nn integers a1,a2,…,ana1,a2,…,an (1≤ai≤1091≤ai≤109) — the elements of the array aa.It is guaranteed that the sum of nn over all test cases does not exceed 2⋅1052⋅105.",
+        "output_specification": "For each test case, output a single integer — the minimum number of operations required.",
+        "time_limit": "2 seconds",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "binary search",
+            "math",
+            "sortings",
+            "two pointers"
+        ],
+        "examples": [
+            {
+                "input": "4\n7\n1 2 3 4 5 6 7\n3\n1 3 2\n3\n4 5 3\n15\n9 3 8 1 6 5 3 8 2 1 4 2 9 4 7",
+                "output": "3\n1\n0\n8\n"
+            }
+        ],
+        "difficulty": "medium"
+    },
+    "solution": {
+        "description": "2032C - TrinityWithout loss of generality, we assume that every array mentioned below is sorted in non-descending order.An array bb of kk elements (k≥3k≥3) will satisfy the problem's criteria iff b1+b2>bkb1+b2>bk. The proof is that b1+b2b1+b2 is the minimum sum possible of any pair of distinct elements of array bb, and if it is larger than the largest element of bb, every pair of distinct elements of bb will be larger than any element of bb on its own.The upper bound for our answer is n−2n−2. This can be done as follows: we will turn every value from a2a2 to an−1an−1 to anan — this way, we only have two types of triangles: (a1,an,an)(a1,an,an) and (an,an,an)(an,an,an). Since a1≥1>0a1≥1>0, we have a1+an>ana1+an>an, which means the former type of triangles is non-degenerate. The latter is also trivially one, as it is a regular/equilateral triangle.Otherwise, we'll need a pair of indices (i,j)(i,j) (1≤i≤n−21≤i≤n−2, i+2≤j≤ni+2≤j≤n), so that in the final array after applying operations to aa, aiai and ai+1ai+1 will be respectively the smallest and second smallest element, and ajaj will be the largest element. Such indices must satisfy ai+ai+1>ajai+ai+1>aj.Let's consider a pair (i,j)(i,j) that satisfies the above condition, then we need to turn elements outside of it (i.e. those before ii or after jj) into some elements within the range [ai+1,aj][ai+1,aj], and indeed we can change them into ai+1ai+1 — this way, we have everything in place while keeping the relative rankings of aiai, ai+1ai+1 and ajaj as what they are initially. Therefore, for such a pair, the number of operations needed is n−(j−i+1)n−(j−i+1). This means that for every ii, we need to find the largest j>ij>i that satisfies the condition, which can easily be done using two pointers.Sorting complexity: O(nlogn)O(nlog⁡n).Two-pointer complexity: O(n)O(n).",
+        "code": "class Solution:\n    hasMultipleTests = True\n\n    n: int = None\n    a: list = None\n\n    @classmethod\n    def preprocess(cls):\n        pass\n\n    @classmethod\n    def input(cls, testcase):\n        cls.n = int(input())\n        cls.a = list(map(int, input().split()))\n\n    @classmethod\n    def solve(cls, testcase):\n        cls.a.sort()\n        l, r, ans = 0, 2, cls.n - 2\n        while r < cls.n:\n            while r - l >= 2 and cls.a[l] + cls.a[l+1] <= cls.a[r]: l += 1\n            ans = min(ans, cls.n - (r - l + 1))\n            r += 1\n        print(ans)\n\n# end Solution"
+    }
+}

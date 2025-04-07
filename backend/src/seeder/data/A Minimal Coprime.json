@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Minimal Coprime",
+        "description": "Today, Little John used all his savings to buy a segment. He wants to build a house on this segment. A segment of positive integers [ l , r ] is called coprime if l and r are coprime ∗ . A coprime segment [ l , r ] is called minimal coprime if it does not contain † any coprime segment not equal to itself. To better understand this statement, you can refer to the notes. Given [ l , r ] , a segment of positive integers, find the number of minimal coprime segments contained in [ l , r ] . ∗ Two integers a and b are coprime if they share only one positive common divisor. For example, the numbers 2 and 4 are not coprime because they are both divided by 2 and 1 , but the numbers 7 and 9 are coprime because their only positive common divisor is 1 . † A segment [ l ′ , r ′ ] is contained in the segment [ l , r ] if and only if l ≤ l ′ ≤ r ′ ≤ r .",
+        "input_specification": "Each test contains multiple test cases. The first line contains the number of test cases tt (1≤t≤1001≤t≤100). The description of the test cases follows. The only line of each test case consists of two integers ll and rr (1≤l≤r≤1091≤l≤r≤109).",
+        "output_specification": "For each test case, output the number of minimal coprime segments contained in [l,r][l,r], on a separate line.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "math",
+            "number theory"
+        ],
+        "examples": [
+            {
+                "input": "6\n1 2\n1 10\n49 49\n69 420\n1 1\n9982 44353",
+                "output": "1\n9\n0\n351\n1\n34371\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2063A - Minimal CoprimeIt is easy to see that two integers l and l+1 are always coprime, due to \\gcd(l,l+1)=\\gcd(1,l)=\\gcd(0,1)=1. Thus, all segments in the form [l,l+1] are coprime, and all minimal coprime segments must have a size of at most 2 (otherwise, it will contain another segment of size 2).It can be observed that the only coprime segment with size 1 is [1,1] as \\gcd(a,a)=a. The set of minimal coprime segments is as follows: [1,1] is minimal coprime. For all l>1, [l,l+1] is minimal coprime. And there is no other segment that is minimal coprime.The solution is thus as follows: If x=y=1, it contains [1,1] and the answer is 1. Otherwise, y>1. There exists exactly one l for all x <= l < y such that [l,*] is minimal coprime and is contained in [x,y]. In other words, the answer is (y-1)-x+1=y-x in this case. The problem has been solved with time complexity \\mathcal{O}(1) per test case.",
+        "code": "for i in range(int(input())):\n    x,y=map(int,input().split())\n    if x==y==1:\n        print(1)\n    else:\n        print(y-x)"
+    }
+}

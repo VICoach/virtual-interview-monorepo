@@ -32,8 +32,11 @@ const customBaseQuery = async (
     const isMutationRequest =
       (args as FetchArgs).method && (args as FetchArgs).method !== "GET";
     if (isMutationRequest) {
-      const successMessage = result.data?.message;
-      if (successMessage) toast.success(successMessage);
+      const messages = [
+        result.data?.message,
+        result.data?.data?.message,
+      ].filter(Boolean);
+      messages.forEach((message) => toast.success(message));
     }
 
     if (result.data) {

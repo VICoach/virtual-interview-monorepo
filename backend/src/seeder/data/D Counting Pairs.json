@@ -1,0 +1,26 @@
+{
+    "problem": {
+        "title": "Counting Pairs",
+        "description": "You are given a sequence a , consisting of n integers, where the i -th element of the sequence is equal to a i . You are also given two integers x and y ( x ≤ y ). A pair of integers ( i , j ) is considered interesting if the following conditions are met: 1 ≤ i < j ≤ n ; if you simultaneously remove the elements at positions i and j from the sequence a , the sum of the remaining elements is at least x and at most y . Your task is to determine the number of interesting pairs of integers for the given sequence a .",
+        "input_specification": "The first line contains one integer t (1≤t≤104) — the number of test cases.Each test case consists of two lines: The first line contains three integers n,x,y (3≤n≤2⋅105, 1≤x≤y≤2⋅1014); The second line contains n integers a1,a2,…,an (1≤ai≤109). Additional constraint on the input: the sum of n across all test cases does not exceed 2⋅105.",
+        "output_specification": "For each test case, output one integer — the number of interesting pairs of integers for the given sequence a.",
+        "time_limit": "2 seconds",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "binary search",
+            "sortings",
+            "two pointers"
+        ],
+        "examples": [
+            {
+                "input": "7\n4 8 10\n4 6 3 6\n6 22 27\n4 9 6 3 4 5\n3 8 10\n3 2 1\n3 1 1\n2 3 4\n3 3 6\n3 2 1\n4 4 12\n3 3 2 1\n6 8 8\n1 1 2 2 2 3",
+                "output": "4\n7\n0\n0\n1\n5\n6\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2051D - Counting PairsThere is a common trick in problems of the form \"count something on segment [l,r][l,r]\": calculate the answer for [0,r][0,r], and then subtract the answer for [0,l−1][0,l−1]. We can use this trick in our problem as follows: calculate the number of pairs i,ji,j such that the sum of all other elements is less than y+1y+1, and subtract the number of pairs such that the sum is less than xx.Now we need to solve the following problem: given an array and an integer xx, calculate the number of ways to choose i,ji,j (1≤i<j≤n1≤i<j≤n) so that the sum of all elements, except for aiai and ajaj, is less than xx.Naive solution (iterate on the pair, calculate the sum of remaining elements) works in O(n3)O(n3). It can be improved to O(n2)O(n2) if, instead of calculating the sum of remaining elements in O(n)O(n), we do it in O(1)O(1): if we remove aiai and ajaj, the remaining elements sum up to s−ai−ajs−ai−aj, where ss is the sum of all elements.However, O(n2)O(n2) is still too slow. For every ii, let's try to calculate the number of elements jj which \"match\" it faster. If we sort the array, the answer won't change; but in a sorted array, for every ii, all possible values of jj form a suffix of the array (if s−ai−aj<xs−ai−aj<x and aj+1≥ajaj+1≥aj, then s−ai−aj+1<xs−ai−aj+1<x). So, for every ii, let's find the minimum j′j′ such that s−ai−aj′<xs−ai−aj′<x; all j≥j′j≥j′ are possible \"matches\" for ii. This can be done with two pointers method: when we decrease ii, the index j′j′ won't decrease.Unfortunately, this method has an issue. We need to calculate only pairs where i<ji<j, but this method doesn't maintain this constraint. However, this issue can be easily resolved.First, let's get rid of pairs where i=ji=j. To do so, simply calculate the number of indices ii such that s−2ai<xs−2ai<x.Then, let's get rid of pairs where i>ji>j. For every such pair, there is a pair with i<ji<j where these two indices are swapped (and vice versa), so we just need to divide the number of pairs by 22.Now we have a solution working in O(nlogn)O(nlog⁡n) for each test case. Instead of two pointers, you can use binary search, the complexity will be the same.",
+        "code": "def calcLessThanX(a, x):\n    n = len(a)\n    s = sum(a)\n    j = 0\n    ans = 0\n\n    for i in range(n-1, -1, -1):\n        while j < n and s - a[i] - a[j] >= x:\n            j += 1\n        ans += (n - j)\n\n    for i in range(n):\n        if s - a[i] - a[i] < x:\n            ans -= 1\n    \n    return ans // 2\n\nfor _ in range(int(input())):\n    n, x, y = map(int, input().split())\n    a = list(map(int, input().split()))\n    \n    a = sorted(a)\n    print(calcLessThanX(a, y+1) - calcLessThanX(a, x))"
+    }
+}

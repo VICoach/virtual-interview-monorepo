@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Serval and Final MEX",
+        "description": "You are given an array a consisting of n ≥ 4 non-negative integers. You need to perform the following operation on a until its length becomes 1 : Select two indices l and r ( 1 ≤ l < r ≤ | a | ), and replace the subarray [ a l , a l + 1 , … , a r ] with a single integer mex ⁡ ( [ a l , a l + 1 , … , a r ] ) , where mex ⁡ ( b ) denotes the minimum excluded (MEX) ∗ of the integers in b . In other words, let x = mex ⁡ ( [ a l , a l + 1 , … , a r ] ) , the array a will become [ a 1 , a 2 , … , a l − 1 , x , a r + 1 , a r + 2 , … , a | a | ] . Note that the length of a decreases by ( r − l ) after this operation. Serval wants the final element in a to be 0 . Help him! More formally, you have to find a sequence of operations, such that after performing these operations in order, the length of a becomes 1 , and the final element in a is 0 . It can be shown that at least one valid operation sequence exists under the constraints of the problem, and the length of any valid operation sequence does not exceed n . Note that you do not need to minimize the number of operations. ∗ The minimum excluded (MEX) of a collection of integers b 1 , b 2 , … , b k is defined as the smallest non-negative integer x which does not occur in the collection b .",
+        "input_specification": "Each test contains multiple test cases. The first line contains the number of test cases tt (1≤t≤10001≤t≤1000). The description of the test cases follows. The first line of each test case contains a single integer nn (4≤n≤50004≤n≤5000) — the length of the array aa.The second line contains nn integers a1,a2,…,ana1,a2,…,an (0≤ai≤n0≤ai≤n) — the elements of the array aa.It is guaranteed that the sum of nn over all test cases does not exceed 50005000.",
+        "output_specification": "For each test case, output a single integer kk (0≤k≤n0≤k≤n) in the first line of output — the length of the operation sequence.Then, output kk lines, the ii-th line containing two integers lili and riri (1≤li<ri≤|a|1≤li<ri≤|a|) — the two indices you choose in the ii-th operation, where |a||a| denotes the length of the array before this operation.If there are multiple answers, you may print any of them.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "constructive algorithms",
+            "implementation"
+        ],
+        "examples": [
+            {
+                "input": "6\n4\n1 2 3 4\n5\n0 1 0 0 1\n6\n0 0 0 0 0 0\n6\n5 4 3 2 1 0\n4\n0 0 1 1\n4\n1 0 0 0",
+                "output": "1\n1 4\n4\n1 2\n1 2\n1 2\n1 2\n4\n5 6\n3 4\n1 2\n1 3\n3\n4 5\n4 5\n1 4\n2\n1 2\n1 3\n2\n2 4\n1 2\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "Note that before the last operation, all the integers in the array should be positive. Thus, we aim to turn the zeroes in a into non-zeroes. To achieve this, we split the given array a into two halves and perform the operations on the halves that contain zeroes. After that, there will be no zeroes in either of the two halves. The final 0 can be obtained by performing the last operation on the entire array. [1,0,1,1_,2,0,8,5]->[2,2,0,8,5_]->[2,1_]->[0]",
+        "code": "getint = lambda: int(input())\ngetints = lambda: map(int, input().split())\n\ndef solve():\n\tn = getint()\n\ta = list(getints())\n\top = []\n\tmid, r = n // 2, n\n\tif 0 in a[mid:]:\n\t\top.append([mid + 1, n])\n\t\tr -= n - mid - 1\n\tif 0 in a[:mid]:\n\t\top.append([1, mid])\n\t\tr -= mid - 1\n\top.append([1, r])\n\tprint(len(op))\n\tfor o in op:\n\t\tprint(*o)\n\nt = getint()\nfor _ in range(t):\n\tsolve()"
+    }
+}

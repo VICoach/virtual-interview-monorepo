@@ -1,0 +1,27 @@
+{
+    "problem": {
+        "title": "Subsequence Update",
+        "description": "After Little John borrowed expansion screws from auntie a few hundred times, eventually she decided to come and take back the unused ones. But as they are a crucial part of home design, Little John decides to hide some in the most unreachable places — under the eco-friendly wood veneers. You are given an integer sequence a 1 , a 2 , … , a n , and a segment [ l , r ] ( 1 ≤ l ≤ r ≤ n ). You must perform the following operation on the sequence exactly once . Choose any subsequence ∗ of the sequence a , and reverse it. Note that the subsequence does not have to be contiguous. Formally, choose any number of indices i 1 , i 2 , … , i k such that 1 ≤ i 1 < i 2 < … < i k ≤ n . Then, change the i x -th element to the original value of the i k − x + 1 -th element simultaneously for all 1 ≤ x ≤ k . Find the minimum value of a l + a l + 1 + … + a r − 1 + a r after performing the operation. ∗ A sequence b is a subsequence of a sequence a if b can be obtained from a by the deletion of several (possibly, zero or all) element from arbitrary positions.",
+        "input_specification": "Each test contains multiple test cases. The first line contains the number of test cases tt (1≤t≤1041≤t≤104). The description of the test cases follows. The first line of each test case contains three integers nn, ll, rr (1≤l≤r≤n≤1051≤l≤r≤n≤105) — the length of aa, and the segment [l,r][l,r].The second line of each test case contains nn integers a1,a2,…,ana1,a2,…,an (1≤ai≤1091≤ai≤109).It is guaranteed that the sum of nn over all test cases does not exceed 105105.",
+        "output_specification": "For each test case, output the minimum value of al+al+1+…+ar−1+aral+al+1+…+ar−1+ar on a separate line.",
+        "time_limit": "1.5 seconds",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "constructive algorithms",
+            "data structures",
+            "greedy",
+            "sortings"
+        ],
+        "examples": [
+            {
+                "input": "6\n2 1 1\n2 1\n3 2 3\n1 2 3\n3 1 3\n3 1 2\n4 2 3\n1 2 2 2\n5 2 5\n3 3 2 3 5\n6 1 3\n3 6 6 4 3 2",
+                "output": "1\n3\n6\n3\n11\n8\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2063B - Subsequence UpdateTo solve this problem, it is important to observe and prove the following claim: Claim: It is not beneficial to choose indices i<li<l and j>rj>r at the same time. Notice that we only care about values that end up on indices in [l,r][l,r].If we choose i1,i2,…,iki1,i2,…,ik such that i1<li1<l and ik>rik>r, i1i1 and ikik will be swapped with each other and not change the values that end up on [l,r][l,r]. This means we can exchange it for a shorter sequence of indices i2,i3,…,ik−1i2,i3,…,ik−1, preserving the values ending up on [l,r][l,r]. If we repeat this exchange until it is no longer possible, it will satisfy either: Every index ii is in [l,n][l,n]; or every index ii is in [1,r][1,r]. We can solve for both cases separately. For either case, we can constructively show that we can get the minimum r−l+1r−l+1 values in the subsegment into [l,r][l,r]. The proof is as follows:WLOG assume we are solving for [1,r][1,r], and the indices of the k=r−l+1k=r−l+1 minimum values are j1,j2,…,jkj1,j2,…,jk. Then: If we select every index in [l,r][l,r] not one of the minimum kk values, there will be xx of them. If we select every index outside [l,r][l,r] which is one of the minimum kk values, there will be also xx of them. Thus, we end up with a subsequence of length 2x2x, that gets the minimum kk values into the subsegment [l,r][l,r]. As a result, we only have to find the minimum kk values of the subsegment. This can be done easily with sorting. Do this for both [1,r][1,r] and [l,n][l,n], and we get the answer.The problem has been solved with time complexity O(nlogn)O(nlog⁡n) per test case, due to sorting.",
+        "code": "import sys\ninput=lambda:sys.stdin.readline().rstrip()\n \nfor _ in range(int(input())):\n    n,l,r=map(int,input().split());l-=1\n    arr=[*map(int,input().split())]\n    brr=arr[:l]+sorted(arr[l:])\n    crr=sorted(arr[:r])[::-1]+arr[r:]\n    print(min(sum(brr[l:r]),sum(crr[l:r])))"
+    }
+}

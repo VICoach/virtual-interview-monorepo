@@ -1,0 +1,26 @@
+{
+    "problem": {
+        "title": "Alice's Adventures in \"Chess\"",
+        "description": "Alice is trying to meet up with the Red Queen in the countryside! Right now, Alice is at position ( 0 , 0 ) , and the Red Queen is at position ( a , b ) . Alice can only move in the four cardinal directions (north, east, south, west). More formally, if Alice is at the point ( x , y ) , she will do one of the following: go north (represented by N ), moving to ( x , y + 1 ) ; go east (represented by E ), moving to ( x + 1 , y ) ; go south (represented by S ), moving to ( x , y − 1 ) ; or go west (represented by W ), moving to ( x − 1 , y ) . Alice's movements are predetermined. She has a string s representing a sequence of moves that she performs from left to right. Once she reaches the end of the sequence, she repeats the same pattern of moves forever. Can you help Alice figure out if she will ever meet the Red Queen?",
+        "input_specification": "Each test contains multiple test cases. The first line contains the number of test cases tt (1≤t≤5001≤t≤500). The description of the test cases follows.The first line of each test case contains three integers nn, aa, bb (1≤n1≤n, aa, b≤10b≤10) — the length of the string and the initial coordinates of the Red Queen.The second line contains a string ss of length nn consisting only of the characters N, E, S, or W.",
+        "output_specification": "For each test case, output a single string \"YES\" or \"NO\" (without the quotes) denoting whether Alice will eventually meet the Red Queen.You can output the answer in any case (upper or lower). For example, the strings \"yEs\", \"yes\", \"Yes\", and \"YES\" will be recognized as positive responses.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "brute force",
+            "implementation",
+            "math"
+        ],
+        "examples": [
+            {
+                "input": "6\n2 2 2\nNE\n3 2 2\nNNE\n6 2 1\nNNEESW\n6 10 10\nNNEESW\n3 4 2\nNEE\n4 5 5\nNEWS",
+                "output": "YES\nNO\nYES\nYES\nYES\nNO\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2028A - Alice's Adventures in ''Chess''We can run the whole pattern 100≫max(a,b,n) times, which gives a total runtime of O(100tn) (be careful in that running the pattern only 10 times is not enough!)To prove that 100 repeats suffices, suppose that Alice's steps on the first run of the pattern are (0,0),(x1,y1),(x2,y2),…,(xn,yn) (we will take x0=0,y0=0 for convenience) Then, Alice ends up at position (a,b) if there exists a t≥0 (the number of extra repeats) such that for some i, xi+txn=a and yi+tyn=b. Certainly, if xn=yn=0, we only need one repeat so assume WLOG that xn≠0. Then, it must be the case that t=a−xixn. However, a−xi≤20 (since xi≥−10) and |xn|≥1, so t≤20 and therefore 21 repeats always suffice.In fact, the above proof shows that we can solve each testcase in time O(n).",
+        "code": "def solve():\n    [n, a, b] = list(map(int, input().split()))\n    s = str(input())\n    x, y = 0, 0\n    for __ in range(100):\n        for c in s:\n            if c == 'N':\n                y += 1\n            elif c == 'E':\n                x += 1\n            elif c == 'S':\n                y -= 1\n            else:\n                x -= 1\n            if x == a and y == b:\n                print(\"YES\")\n                return\n    print(\"NO\")\n \nt = int(input())\n \nfor _ in range(t):\n    solve()"
+    }
+}
