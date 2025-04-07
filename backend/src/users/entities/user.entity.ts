@@ -27,7 +27,11 @@ export class User {
 
   @IsString()
   @Exclude() // Exclude this field from the response
-  password: string;
+  password: string | null;
+
+  @IsString()
+  @Exclude()
+  provider_id: string | null;
 
   @IsBoolean()
   email_confirmed: boolean;

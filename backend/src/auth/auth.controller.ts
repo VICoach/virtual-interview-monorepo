@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   Res,
+  Get,
 } from '@nestjs/common';
 import { LoginDto } from './dto/login-user.dto';
 import { AuthService } from './auth.service';
@@ -18,6 +19,8 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { Public } from './decorators/public.decorator';
 import { Response, Request } from 'express';
 import { ApiOperation, ApiBody, ApiCookieAuth } from '@nestjs/swagger';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
+import { ConfigService } from '@nestjs/config';
 
 interface CustomError {
   message: string;
@@ -33,7 +36,10 @@ interface RequestWithCookies extends Request {
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('/register')
   @Public()
@@ -306,5 +312,37 @@ export class AuthController {
         typedError.status || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Get('google')
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  async googleAuth() {
+    // Initiates the Google OAuth flow
+  }
+
+  @Get('google/callback')
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  googleAuthRedirect(
+    @Req()
+    req: Request & { user: { access_token: string; refresh_token: string } },
+    @Res() res: Response,
+  ) {
+    // Handle the Google callback
+    const tokens = req.user;
+
+    // Set refresh token in cookie
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    // Redirect to frontend with access token
+    res.redirect(
+      `${this.configService.get('FRONTEND_URL')}/oauth?access_token=${tokens.access_token}`,
+    );
   }
 }
