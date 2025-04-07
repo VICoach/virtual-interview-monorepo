@@ -5,10 +5,12 @@ export class CreateUserDto {
   username: string;
 
   @IsString()
-  first_name: string;
+  @IsOptional()
+  first_name: string | null;
 
   @IsString()
-  last_name: string;
+  @IsOptional()
+  last_name: string | null;
 
   @IsEmail()
   email: string;
