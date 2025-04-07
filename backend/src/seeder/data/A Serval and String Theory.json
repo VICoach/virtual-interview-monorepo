@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Serval and String Theory",
+        "description": "A string r consisting only of lowercase Latin letters is called universal if and only if r is lexicographically smaller ∗ than the reversal † of r . You are given a string s consisting of n lowercase Latin letters. You are required to make s universal . To achieve this, you can perform the following operation on s at most k times: Choose two indices i and j ( 1 ≤ i , j ≤ n ), then swap s i and s j . Note that if i = j , you do nothing. Determine whether you can make s universal by performing the above operation at most k times. ∗ A string a is lexicographically smaller than a string b of the same length, if and only if the following holds: in the first position where a and b differ, the string a has a letter that appears earlier in the alphabet than the corresponding letter in b . † The reversal of a string r is the string obtained by writing r from right to left. For example, the reversal of the string abcad is dacba .",
+        "input_specification": "Each test contains multiple test cases. The first line contains the number of test cases t (1≤t≤500). The description of the test cases follows. The first line of each test case contains two integers n and k (1≤n≤100, 0≤k≤104) — the length of the string s, and the maximum number of operations you can perform.The second line contains a string s consisting of n lowercase Latin letters.",
+        "output_specification": "For each test case, print \"YES\" if it is possible to make s universal by performing the operation at most k times. Otherwise, print \"NO\".You can output the answer in any case (upper or lower). For example, the strings \"yEs\", \"yes\", \"Yes\", and \"YES\" will be recognized as positive responses.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "constructive algorithms",
+            "implementation"
+        ],
+        "examples": [
+            {
+                "input": "8\n1 10000\na\n3 3\nrev\n6 0\nstring\n6 0\ntheory\n9 2\nuniversal\n19 0\ncodeforcesecrofedoc\n19 1\ncodeforcesecrofedoc\n3 1\nzzz",
+                "output": "NO\nYES\nNO\nYES\nYES\nNO\nYES\nNO\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "Case 1. If s contains only one kind of letter, the answer will be NO.Case 2. If s is universal already, no operation is needed, and the answer will be YES.Otherwise, s falls into the following Case 3.Case 3.1. When s is not a palindrome, one can make s universal in one operation by swapping the first pair of different letters of s and its reversal. s=st_ringsreversal of s=sg_nirts}swap->sgrintsCase 3.2. When s is a palindrome, swapping any two distinct letters will make s no longer a palindrome. Note that the reversal of s after the swap can be obtained by swapping the letters in the symmetric positions of the original s. Since either s or its reversal is universal, the original s can be made universal in one operation. s=le_v_elswap->{s′=lv_e_elreversal of s′=lee_v_l}leevlThus, for Case 3, the answer will be NO if no operation can be performed; otherwise, the answer will be YES.",
+        "code": "getint = lambda: int(input())\ngetints = lambda: map(int, input().split())\n\ndef solve():\n\tn, k = getints()\n\ts = input().strip()\n\tif s < s[::-1] or (k >= 1 and min(s) != max(s)):\n\t\tprint('YES')\n\telse:\n\t\tprint('NO')\n\nt = getint()\nfor _ in range(t):\n\tsolve()"
+    }
+}

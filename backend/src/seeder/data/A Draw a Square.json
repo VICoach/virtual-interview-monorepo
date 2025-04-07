@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Draw a Square",
+        "description": "The pink soldiers have given you 4 distinct points on the plane. The 4 points' coordinates are ( − l , 0 ) , ( r , 0 ) , ( 0 , − d ) , ( 0 , u ) correspondingly, where l , r , d , u are positive integers. In the diagram, a square is drawn by connecting the four points L , R , D , U . Please determine if it is possible to draw a square ∗ with the given points as its vertices. ∗ A square is defined as a polygon consisting of 4 vertices, of which all sides have equal length and all inner angles are equal. No two edges of the polygon may intersect each other.",
+        "input_specification": "Each test contains multiple test cases. The first line contains the number of test cases tt (1≤t≤1041≤t≤104). The description of the test cases follows. The first line of each test case contains four integers ll, rr, dd, uu (1≤l,r,d,u≤101≤l,r,d,u≤10).",
+        "output_specification": "For each test case, if you can draw a square using the four points, output \"Yes\". Otherwise, output \"No\".You can output the answer in any case. For example, the strings \"yEs\", \"yes\", and \"YES\" will also be recognized as positive responses.",
+        "time_limit": "1 second",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "geometry",
+            "implementation"
+        ],
+        "examples": [
+            {
+                "input": "2\n2 2 2 2\n1 2 3 4",
+                "output": "Yes\nNo\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2074A - Draw a SquareFor the given four points to make a square, we can see that the following must hold: ll, rr, dd, uu must all be equal. The proof is left as a practice for the reader, but generally, it can be proved easily by seeing that the square is both a rhombus and a rectangle.The problem is solved in O(1)O(1) per test case.",
+        "code": "for i in range(int(input())):\n    l,r,d,u=map(int,input().split())\n    if l==r==d==u:\n        print(\"Yes\")\n    else:\n        print(\"No\")"
+    }
+}

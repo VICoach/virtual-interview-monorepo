@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Was there an Array?",
+        "description": "For an array of integers a 1 , a 2 , … , a n , we define its equality characteristic as the array b 2 , b 3 , … , b n − 1 , where b i = 1 if the i -th element of the array a is equal to both of its neighbors, and b i = 0 if the i -th element of the array a is not equal to at least one of its neighbors. For example, for the array [ 1 , 2 , 2 , 2 , 3 , 3 , 4 , 4 , 4 , 4 ] , the equality characteristic will be [ 0 , 1 , 0 , 0 , 0 , 0 , 1 , 1 ] . You are given the array b 2 , b 3 , … , b n − 1 . Your task is to determine whether there exists such an array a for which the given array is the equality characteristic.",
+        "input_specification": "The first line contains one integer tt (1≤t≤10001≤t≤1000) — the number of test cases.Each test case consists of two lines: the first line contains one integer nn (3≤n≤1003≤n≤100); the second line contains n−2n−2 integers b2,b3,…,bn−1b2,b3,…,bn−1 (0≤bi≤10≤bi≤1).",
+        "output_specification": "For each test case, output YES if the array aa exists, or NO if such an array does not exist. Each letter can be printed in any case.",
+        "time_limit": "2 seconds",
+        "memory_limit": "512 megabytes",
+        "tags": [
+            "graph matchings",
+            "greedy"
+        ],
+        "examples": [
+            {
+                "input": "3\n10\n0 1 0 0 0 0 1 1\n3\n1\n10\n0 1 0 1 1 0 0 1",
+                "output": "YES\nYES\nNO\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2069A - Was there an Array?Let's try to find some contradiction of the following kind for the given array: we know for sure that some element aa must be equal to its neighbors, but the corresponding value bibi is zero, or vice versa.If both bi−1bi−1 and bi+1bi+1 are equal to 11, it means that the ii-th element is equal to both of its neighbors, then bibi must also be equal to 11. That is, if there exists such an index ii that bi−1=bi+1=1bi−1=bi+1=1 and bi=0bi=0, we have a contradiction.It is not difficult to prove that if such an index does not exist, then it is always possible to find an array aa that satisfies all conditions. Let's construct it as follows: a1=1a1=1; for each subsequent element aiai, if at least one of (bi−1,bi)(bi−1,bi) is equal to 11, we must choose ai=ai−1ai=ai−1, otherwise we set ai=ai−1+1ai=ai−1+1. This way, we can be sure that if bibi is equal to 11, then ai−1=ai=ai+1ai−1=ai=ai+1. Therefore, the only problem may arise if some bibi is equal to 00, but at the same time ai−1=ai=ai+1ai−1=ai=ai+1. However, if ai−1=aiai−1=ai and bi=0bi=0, then bi−1=1bi−1=1. Similarly, bi+1=1bi+1=1. Thus, we have constructed the case where bi−1=bi+1=1bi−1=bi+1=1 and bi=0bi=0, which is the only case which can lead to a contradiction.Therefore, the solution reduces to checking whether there exists such an index ii that bi−1=bi+1=1bi−1=bi+1=1 and bi=0bi=0.",
+        "code": "t = int(input())\nfor i in range(t):\n    n = int(input())\n    s = list(input().split())\n    s = \"\".join(s)\n    if \"101\" in s:\n        print('NO')\n    else:\n        print('YES')\n"
+    }
+}

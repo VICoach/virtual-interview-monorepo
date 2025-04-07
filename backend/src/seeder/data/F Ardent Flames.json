@@ -1,0 +1,28 @@
+{
+    "problem": {
+        "title": "Ardent Flames",
+        "description": "You have obtained the new limited event character Xilonen. You decide to use her in combat. There are n enemies in a line. The i 'th enemy from the left has health h i and is currently at position x i . Xilonen has an attack damage of m , and you are ready to defeat the enemies with her. Xilonen has a powerful \"ground stomp\" attack. Before you perform any attacks , you select an integer p and position Xilonen there ( p can be any integer position, including a position with an enemy currently). Afterwards, for each attack, she deals m damage to an enemy at position p (if there are any), m − 1 damage to enemies at positions p − 1 and p + 1 , m − 2 damage to enemies at positions p − 2 and p + 2 , and so on. Enemies that are at least a distance of m away from Xilonen take no damage from attacks. Formally, if there is an enemy at position x , she will deal max ( 0 , m − | p − x | ) damage to that enemy each hit. Note that you may not choose a different p for different attacks. Over all possible p , output the minimum number of attacks Xilonen must perform to defeat at least k enemies. If it is impossible to find a p such that eventually at least k enemies will be defeated, output − 1 instead. Note that an enemy is considered to be defeated if its health reaches 0 or below.",
+        "input_specification": "The first line contains an integer tt (1≤t≤1041≤t≤104) – the number of test cases.The first line of each test case contains three integers nn, mm, and kk (1≤k≤n≤1051≤k≤n≤105, 1≤m≤1091≤m≤109).The following line contains nn integers h1,h2,...,hnh1,h2,...,hn (1≤hi≤1091≤hi≤109).The last line of each testcase contains nn integers x1,x2,...,xnx1,x2,...,xn (1≤xi≤1091≤xi≤109, xi<xi+1xi<xi+1 for all 1≤i<n1≤i<n)It is guaranteed that the sum of nn over all test cases does not exceed 105105.",
+        "output_specification": "For each test case, output an integer on a new line, the minimum number of attacks that must be performed to defeat at least kk enemies. If it is impossible to find a pp such that eventually at least kk enemies will be defeated, output −1−1 instead.",
+        "time_limit": "4 seconds",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "binary search",
+            "data structures",
+            "math",
+            "sortings",
+            "two pointers"
+        ],
+        "examples": [
+            {
+                "input": "6\n5 5 3\n7 7 7 7 7\n1 2 3 4 5\n9 5 9\n2 4 6 8 10 8 6 4 2\n1 2 3 4 5 6 7 8 9\n2 10 2\n1 1\n1 20\n2 10 1\n69696969 420420420\n1 20\n2 10 2\n10 15\n1 19\n2 2 2\n1000000000 1\n1 3",
+                "output": "2\n2\n-1\n6969697\n15\n1000000000\n"
+            }
+        ],
+        "difficulty": "hard"
+    },
+    "solution": {
+        "description": "Let's perform binary search on the minimum number of hits to kill at least kk enemies. How do we check if a specific answer is possible? Let's consider a single enemy for now. If its health is hihi and we need to kill it in at most qq attacks, then we need to be doing at least ⌈hiq⌉⌈hiq⌉ damage per attack to this enemy. If this number is greater than mm, then obviously we cannot kill this enemy in at most qq attacks as the maximum damage Xilonen can do is mm damage per hit. Otherwise, we can model the enemy as a valid interval where we can place Xilonen. Specifically, the inequality m−|p−x|≥⌈hiq⌉m−|p−x|≥⌈hiq⌉ must be satisfied. Now that we have modeled each enemy as an interval, the problem is reduced to finding whether or not there exists a point on at least kk intervals. This is a classic problem that can be approached by a sweep-line algorithm, sorting the events of intervals starting and ending by time and adding 11 to your counter when an interval starts and subtracting 11 to your counter when an interval ends. Note that the maximum possible answer to any setup with a solution is max(hi)=109max(hi)=109, so if we cannot kill at least kk enemies in 109109 attacks then we can just output −1−1 as our answer.The total time complexity is O(nlog(n)log(max(hi))O(nlog⁡(n)log⁡(max(hi)).",
+        "code": "import sys\ninput = sys.stdin.readline\nfrom collections import defaultdict\nfor _ in range(1):\n    n,m,k = map(int,input().split())\n    h = list(map(int,input().split()))\n    x = list(map(int,input().split()))\n    lo = 0\n    hi = int(1e10)\n    while hi - lo > 1:\n        mid = (lo + hi) // 2\n        ev = defaultdict(int)\n        for i in range(n):\n            ma = (h[i] + mid - 1) // mid\n            if ma > m: continue\n            ev[x[i]-m+ma] += 1\n            ev[x[i]+m-ma+1] -= 1\n        sc = 0\n        for y in sorted(ev.keys()):\n            sc += ev[y]\n            if sc >= k:\n                hi = mid\n                break\n        else:\n            lo = mid\n    if hi == int(1e10):\n        print(-1)\n    else:\n        print(hi)"
+    }
+}

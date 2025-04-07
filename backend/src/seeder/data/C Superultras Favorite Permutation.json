@@ -1,0 +1,27 @@
+{
+    "problem": {
+        "title": "Superultra's Favorite Permutation",
+        "description": "Superultra, a little red panda, desperately wants primogems. In his dreams, a voice tells him that he must solve the following task to obtain a lifetime supply of primogems. Help Superultra! Construct a permutation ∗ p of length n such that p i + p i + 1 is composite † over all 1 ≤ i ≤ n − 1 . If it's not possible, output − 1 . ∗ A permutation of length n is an array consisting of n distinct integers from 1 to n in arbitrary order. For example, [ 2 , 3 , 1 , 5 , 4 ] is a permutation, but [ 1 , 2 , 2 ] is not a permutation ( 2 appears twice in the array), and [ 1 , 3 , 4 ] is also not a permutation ( n = 3 but there is 4 in the array). † An integer x is composite if it has at least one other divisor besides 1 and x . For example, 4 is composite because 2 is a divisor.",
+        "input_specification": "The first line contains tt (1≤t≤1041≤t≤104) — the number of test cases.Each test case contains an integer nn (2≤n≤2⋅1052≤n≤2⋅105) — the length of the permutation.It is guaranteed that the sum of nn over all test cases does not exceed 2⋅1052⋅105.",
+        "output_specification": "For each test case, if it's not possible to construct pp, output −1−1 on a new line. Otherwise, output nn integers p1,p2,…,pnp1,p2,…,pn on a new line.",
+        "time_limit": "2 seconds",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "constructive algorithms",
+            "greedy",
+            "math",
+            "number theory"
+        ],
+        "examples": [
+            {
+                "input": "2\n3\n8",
+                "output": "-1\n1 8 7 3 6 2 4 5"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "Remember that all even numbers greater than 22 are composite. As 1+3>21+3>2, any two numbers with same parity sum up to a composite number. Now you only have to find one odd number and one even number that sum up to a composite number. One can manually verify that there is no such pair in n≤4n≤4, but in n=5n=5 there exists (4,5)(4,5) which sums up to 99, a composite number.",
+        "code": "for _ in range(int(input())):\n    n = int(input())\n    if n < 5:\n        print(-1)\n        continue\n    for i in range(2,n+1,2):\n        if i != 4:\n            print(i,end=\" \")\n    print(\"4 5\",end=\" \")\n    for i in range(1,n+1,2):\n        if i != 5:\n            print(i, end = \" \")\n    print()"
+    }
+}

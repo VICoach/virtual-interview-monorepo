@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Set of Strangers",
+        "description": "You are given a table of n rows and m columns. Initially, the cell at the i -th row and the j -th column has color a i , j . Let's say that two cells are strangers if they don't share a side. Strangers are allowed to touch with corners. Let's say that the set of cells is a set of strangers if all pairs of cells in the set are strangers. Sets with no more than one cell are sets of strangers by definition. In one step, you can choose any set of strangers such that all cells in it have the same color and paint all of them in some other color. You can choose the resulting color. What is the minimum number of steps you need to make the whole table the same color?",
+        "input_specification": "The first line contains a single integer tt (1≤t≤1041≤t≤104) — the number of test cases. Next, tt cases follow.The first line of each test case contains two integers nn and mm (1≤n≤m≤7001≤n≤m≤700) — the number of rows and columns in the table.The next nn lines contain the colors of cells in the corresponding row ai,1,…,ai,mai,1,…,ai,m (1≤ai,j≤nm1≤ai,j≤nm).It's guaranteed that the total sum of nmnm doesn't exceed 5⋅1055⋅105 over all test cases.",
+        "output_specification": "For each test case, print one integer — the minimum number of steps to paint all cells of the table the same color.",
+        "time_limit": "2 seconds",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "greedy",
+            "matrices"
+        ],
+        "examples": [
+            {
+                "input": "4\n1 1\n1\n3 3\n1 2 1\n2 3 2\n1 3 1\n1 6\n5 4 5 4 4 5\n3 4\n1 4 2 2\n1 4 3 5\n6 6 3 5",
+                "output": "0\n2\n1\n10\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2069B - Set of StrangersLet's fix some color and look at all cells of that color. We can decide either to leave this color as the resulting one and then we can ignore all these cells. Or we should get rid of this color, and it would cost at least one operation.If all cells are pairwise strangers, then one operation is enough to recolor all of them in the desired color. Otherwise, we need at least two operations. It turns out that two operations are enough: each connected component of the same color can be painted in two steps if we color the table like a chessboard and choose \"black\" cells at the first step and \"white\" cells at the second step. Since components don't touch each other, we can choose subsets from different components independently. In total, we can get rid of any color in two steps.As a result, for each color, let's calculate the number of steps we need to get rid of it as vcvc. It's equal to 11 if it's present in the table, plus 11 if there are two neighbors of that color. The answer then equals to ∑nmc=1vc∑c=1nmvc minus the color we decided to leave untouched. Or, optimally, ∑nmc=1vc−maxnmc=1vc∑c=1nmvc−maxc=1nmvc",
+        "code": "for _ in range(int(input())):\n    n, m = map(int, input().split())\n    a = [list(map(int, input().split())) for i in range(n)]\n    hasColor = [0] * (n * m)\n    hasBad = [0] * (n * m)\n    for i in range(n):\n        for j in range(m):\n            hasColor[a[i][j] - 1] = 1\n            if i + 1 < n and a[i][j] == a[i + 1][j]:\n                hasBad[a[i][j] - 1] = 1\n            if j + 1 < m and a[i][j] == a[i][j + 1]:\n                hasBad[a[i][j] - 1] = 1\n    print(sum(hasColor) + sum(hasBad) - 1 - max(hasBad))\n"
+    }
+}

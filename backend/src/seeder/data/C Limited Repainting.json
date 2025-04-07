@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Limited Repainting",
+        "description": "You are given a strip, consisting of n cells, all cells are initially colored red. In one operation, you can choose a segment of consecutive cells and paint them blue . Before painting, the chosen cells can be either red or blue. Note that it is not possible to paint them red. You are allowed to perform at most k operations (possibly zero). For each cell, the desired color after all operations is specified: red or blue. It is clear that it is not always possible to satisfy all requirements within k operations. Therefore, for each cell, a penalty is also specified, which is applied if the cell ends up the wrong color after all operations. For the i -th cell, the penalty is equal to a i . The penalty of the final painting is calculated as the maximum penalty among all cells that are painted the wrong color. If there are no such cells, the painting penalty is equal to 0 . What is the minimum penalty of the final painting that can be achieved?",
+        "input_specification": "The first line contains a single integer t (1≤t≤104) — the number of test cases.The first line of each test case contains two integers n and k (1≤n≤3⋅105; 0≤k≤n) — the length of the strip and the maximum number of operations.The second line contains a string s, consisting of n characters 'R' and/or 'B'. 'R' means that the cell should be painted red. 'B' means that the cell should be painted blue.The third line contains n integers a1,a2,…,an (1≤ai≤109) — the penalty for each cell.The sum of n over all test cases does not exceed 3⋅105.",
+        "output_specification": "For each test case, print a single integer — the minimum penalty of the final painting.",
+        "time_limit": "2 seconds",
+        "memory_limit": "512 megabytes",
+        "tags": [
+            "binary search",
+            "greedy"
+        ],
+        "examples": [
+            {
+                "input": "5\n4 1\nBRBR\n9 3 5 4\n4 1\nBRBR\n9 5 3 4\n4 2\nBRBR\n9 3 5 4\n10 2\nBRBRBBRRBR\n5 1 2 4 5 3 6 1 5 4\n5 5\nRRRRR\n5 3 1 2 4",
+                "output": "3\n3\n0\n4\n0\n"
+            }
+        ],
+        "difficulty": "medium"
+    },
+    "solution": {
+        "description": "2070C - Limited RepaintingThe problem asks to minimize the maximum. An experienced participant should immediately consider binary search as a possible solution.The condition for binary search can be formulated as follows: is there a coloring such that its penalty does not exceed x? If the penalty does not exceed x, then it does not exceed x+1, which means the function is monotonic.This can be interpreted as follows. Cells with a penalty less than or equal to x can be left red, or they can be painted blue. Cells with a penalty greater than x must be painted the correct color. In fact, since we don't care about the cells of the first type, we can simply remove them from the strip. We need to ensure that the cells of the second type can be correctly colored in no more than k operations. That is, we need to check that the blue cells can be divided into no more than k contiguous segments.This check can be done in linear time. We can count the number of positions i such that cell i is blue, and cell i−1 is either absent or red. Each such position indicates the start of a segment. Therefore, their count is equal to the number of segments.Overall complexity: O(nlogA) for each testcase.",
+        "code": "for _ in range(int(input())):\n    n, k = map(int, input().split())\n    s = input()\n    a = list(map(int, input().split()))\n    l, r = 0, 10**9\n    res = -1\n    \n    def check(d):\n        last = 'R'\n        cnt = 0\n        for i in range(n):\n            if a[i] > d:\n                if s[i] == 'B' and last != 'B':\n                    cnt += 1\n                last = s[i]\n        return cnt <= k\n    \n    while l <= r:\n        m = (l + r) // 2\n        if check(m):\n            res = m\n            r = m - 1\n        else:\n            l = m + 1\n    print(res)"
+    }
+}
