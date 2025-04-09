@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "AccountType" AS ENUM ('USER', 'ADMIN');
 
+-- CreateEnum
+CREATE TYPE "ProviderType" AS ENUM ('GOOGLE');
+
 -- CreateTable
 CREATE TABLE "User" (
     "user_id" SERIAL NOT NULL,
@@ -8,7 +11,8 @@ CREATE TABLE "User" (
     "first_name" TEXT NOT NULL,
     "last_name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "password" TEXT,
+    "provider_id" TEXT,
     "accountType" "AccountType"[] DEFAULT ARRAY['USER']::"AccountType"[],
     "email_confirmed" BOOLEAN NOT NULL DEFAULT false,
     "verify_token" TEXT,
@@ -17,6 +21,14 @@ CREATE TABLE "User" (
     "access_token" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("user_id")
+);
+
+-- CreateTable
+CREATE TABLE "Provider" (
+    "provider_id" TEXT NOT NULL,
+    "type" "ProviderType" NOT NULL,
+
+    CONSTRAINT "Provider_pkey" PRIMARY KEY ("provider_id")
 );
 
 -- CreateTable
@@ -158,6 +170,9 @@ CREATE UNIQUE INDEX "Answer_question_id_key" ON "Answer"("question_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Feedback_answer_id_key" ON "Feedback"("answer_id");
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_provider_id_fkey" FOREIGN KEY ("provider_id") REFERENCES "Provider"("provider_id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Profile" ADD CONSTRAINT "Profile_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;

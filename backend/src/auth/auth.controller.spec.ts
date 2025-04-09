@@ -7,6 +7,7 @@ import { HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto/login-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ConfigService } from '@nestjs/config';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -21,6 +22,7 @@ describe('AuthController', () => {
     forgotPassword: jest.fn(),
     resetPassword: jest.fn(),
     sendVerificationEmail: jest.fn(),
+    validateOAuthLogin: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -30,6 +32,12 @@ describe('AuthController', () => {
         {
           provide: AuthService,
           useValue: mockAuthService,
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn().mockReturnValue('http://frontend.url'),
+          },
         },
       ],
     }).compile();
@@ -169,12 +177,10 @@ describe('AuthController', () => {
 
       const expectedResult = {
         access_token: 'newAccessToken',
+        refresh_token: 'newRefreshToken',
       };
 
-      mockAuthService.refreshToken.mockResolvedValue({
-        access_token: expectedResult.access_token,
-        refresh_token: 'newRefreshToken',
-      });
+      mockAuthService.refreshToken.mockResolvedValue(expectedResult);
 
       const result = await controller.refreshToken(
         mockRequest as any,
@@ -182,12 +188,20 @@ describe('AuthController', () => {
       );
 
       expect(authService.refreshToken).toHaveBeenCalledWith(mockRefreshToken);
-      expect(mockResponse.cookie).toHaveBeenCalled();
+      expect(mockResponse.cookie).toHaveBeenCalledWith(
+        'refresh_token',
+        expectedResult.refresh_token,
+        {
+          httpOnly: true,
+          secure: false, // test environment
+          sameSite: 'lax',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        },
+      );
       expect(result).toEqual(
-        ResponseUtil.success(
-          'Access token refreshed successfully',
-          expectedResult,
-        ),
+        ResponseUtil.success('Access token refreshed successfully', {
+          access_token: expectedResult.access_token,
+        }),
       );
     });
 
@@ -315,6 +329,42 @@ describe('AuthController', () => {
       });
 
       await expect(controller.sendVerifyEmail(email)).rejects.toThrow();
+    });
+  });
+
+  describe('Google OAuth', () => {
+    it('googleAuth should initiate OAuth flow', async () => {
+      const result = await controller.googleAuth();
+      expect(result).toBeUndefined();
+    });
+
+    it('googleAuthRedirect should handle callback', () => {
+      const mockRequest = {
+        user: {
+          access_token: 'googleAccessToken',
+          refresh_token: 'googleRefreshToken',
+        },
+      };
+      const mockResponse = {
+        cookie: jest.fn(),
+        redirect: jest.fn(),
+      };
+
+      controller.googleAuthRedirect(mockRequest as any, mockResponse as any);
+
+      expect(mockResponse.cookie).toHaveBeenCalledWith(
+        'refresh_token',
+        'googleRefreshToken',
+        {
+          httpOnly: true,
+          secure: false, // test environment
+          sameSite: 'lax',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        },
+      );
+      expect(mockResponse.redirect).toHaveBeenCalledWith(
+        'http://frontend.url/oauth?access_token=googleAccessToken',
+      );
     });
   });
 });
