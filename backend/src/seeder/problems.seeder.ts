@@ -1,9 +1,7 @@
 import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
-import { PrismaModule } from '../prisma/prisma.module';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaClient } from '@prisma/client';
 
 interface Example {
   input: string;
@@ -28,11 +26,12 @@ interface SolutionData {
 }
 
 async function seed() {
-  const app = await NestFactory.createApplicationContext(PrismaModule);
-  const prisma = app.get(PrismaService);
+  const prisma = new PrismaClient();
+
   const logger = new Logger('Seeder');
 
   try {
+    await prisma.$connect();
     logger.log('Clearing existing data...');
     await prisma.technicalSolution.deleteMany();
     await prisma.technicalProblem.deleteMany();
@@ -80,7 +79,7 @@ async function seed() {
     logger.error('Seeding failed:', error);
     process.exit(1);
   } finally {
-    await app.close();
+    await prisma.$disconnect();
   }
 }
 
