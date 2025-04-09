@@ -31,7 +31,12 @@ const RegisterPage = () => {
   const onSubmit: SubmitHandler<UserRegistrationFormData> = useCallback(
     async (data: UserRegistrationFormData) => {
       try {
-        const response = await registerUser(data).unwrap();
+        const { username, email, password } = data;
+        const response = await registerUser({
+          username,
+          email,
+          password,
+        }).unwrap();
         console.log("Registration response:", response);
       } catch (error) {
         console.error("Failed to register:", error);

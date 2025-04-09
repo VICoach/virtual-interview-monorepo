@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Cirno and Operations",
+        "description": "Cirno has a sequence a of length n . She can perform either of the following two operations for any (possibly, zero) times unless the current length of a is 1 : Reverse the sequence. Formally, [ a 1 , a 2 , … , a n ] becomes [ a n , a n − 1 , … , a 1 ] after the operation. Replace the sequence with its difference sequence. Formally, [ a 1 , a 2 , … , a n ] becomes [ a 2 − a 1 , a 3 − a 2 , … , a n − a n − 1 ] after the operation. Find the maximum possible sum of elements of a after all operations.",
+        "input_specification": "The first line of input contains a single integer t (1≤t≤100) — the number of input test cases.The first line of each test case contains a single integer n (1≤n≤50) — the length of sequence a.The second line of each test case contains n integers a1,a2,…,an (|ai|≤1000) — the sequence a.",
+        "output_specification": "For each test case, print an integer representing the maximum possible sum.",
+        "time_limit": "2 seconds",
+        "memory_limit": "512 megabytes",
+        "tags": [
+            "brute force",
+            "math"
+        ],
+        "examples": [
+            {
+                "input": "5\n1\n-1000\n2\n5 -3\n2\n1000 1\n9\n9 7 9 -9 9 -8 7 -8 9\n11\n678 201 340 444 453 922 128 987 127 752 0",
+                "output": "-1000\n8\n1001\n2056\n269891\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2062C - Cirno and OperationsLet the reversal be called operation 11, and the difference be called operation 22. Consider swapping two adjacent operations: 12->2112->21. If the sequence before the operations is [a1,a2,…,an][a1,a2,…,an], then after the operations, the sequence changes from [an−1−an,an−2−an−1,…,a1−a2][an−1−an,an−2−an−1,…,a1−a2] to [an−an−1,an−1−an−2,…,a2−a1][an−an−1,an−1−an−2,…,a2−a1]. Thus, swapping adjacent 1,21,2 is equivalent to taking the negation of each element of the array. Therefore, any operation sequence is equivalent to first performing 22 several times, and then performing 11 several times, and then taking the negation several times. Since 11 does not change the sum of the sequence, the answer is the maximum absolute value of the sequence sum after performing a certain number of 22.There is a corner case: if you don't perform 22 at all, you can not take the negation. Besides, the upper bound of the answer is 1000×2501000×250, so you have to use 64-bit integers.",
+        "code": "from math import *\nfor _ in range(int(input())):\n\tn=int(input())\n\ta=list(map(int,input().split()))\n\tans=sum(a)\n\twhile n>1:\n\t\tn-=1\n\t\ta=[a[i+1]-a[i] for i in range(n)]\n\t\tans=max(ans,abs(sum(a)))\n\tprint(ans)\n"
+    }
+}

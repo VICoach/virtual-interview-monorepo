@@ -1,0 +1,29 @@
+{
+    "problem": {
+        "title": "The Game (Easy Version)",
+        "description": "This is the easy version of the problem. The difference between the versions is that in this version, you only need to find one of the possible nodes Cirno may choose. You can hack only if you solved all versions of this problem. Cirno and Daiyousei are playing a game with a tree ∗ of n nodes, rooted at node 1 . The value of the i -th node is w i . They take turns to play the game; Cirno goes first. In each turn, assuming the opponent chooses j in the last turn, the player can choose any remaining node i satisfying w i > w j and delete the subtree † of node i . In particular, Cirno can choose any node and delete its subtree in the first turn. The first player who can not operate wins , and they all hope to win. Find one of the possible nodes Cirno may choose so that she wins if both of them play optimally. ∗ A tree is a connected graph without cycles. † Node u is considered in the subtree of node i if any path from 1 to u must go through i .",
+        "input_specification": "The first line of input contains a single integer tt (1≤t≤1051≤t≤105) — the number of input test cases.The first line of each test case contains one integer nn (1≤n≤4⋅1051≤n≤4⋅105) — the number of nodes in the tree.The second line contains nn integers w1,w2,…,wnw1,w2,…,wn (1≤wi≤n1≤wi≤n) — the value of each node.The next n−1n−1 lines contain the edges of the tree. The ii-th line contains two integers ui,viui,vi (1≤ui,vi≤n1≤ui,vi≤n, ui≠viui≠vi) — an edge connecting uiui and vivi. It is guaranteed that the given edges form a tree.It is guaranteed that the sum of nn over all test cases does not exceed 4⋅1054⋅105.",
+        "output_specification": "For each test case, print one line.If Cirno wins the game, print any possible node she may choose in the first turn.Otherwise, print \"0\" (without quotes).",
+        "time_limit": "4 seconds",
+        "memory_limit": "512 megabytes",
+        "tags": [
+            "data structures",
+            "dfs and similar",
+            "games",
+            "graphs",
+            "greedy",
+            "trees"
+        ],
+        "examples": [
+            {
+                "input": "5\n4\n2 2 4 3\n1 2\n1 3\n2 4\n5\n1 2 3 4 5\n1 2\n2 3\n3 4\n4 5\n3\n1 2 3\n1 2\n1 3\n5\n3 1 3 4 5\n1 2\n2 3\n3 4\n4 5\n10\n1 2 3 2 4 3 3 4 4 3\n1 4\n4 6\n7 4\n6 9\n6 5\n7 8\n1 2\n2 3\n2 10",
+                "output": "2\n0\n2\n2\n10\n"
+            }
+        ],
+        "difficulty": "hard"
+    },
+    "solution": {
+        "description": "2062E1 - The Game (Easy Version)In the first round, the node uu chosen by Cirno must satisfy: there exists a node vv outside the subtree of uu such that wv>wuwv>wu. If no such node exists, then Cirno will lose.Among these nodes, Cirno can choose the node with the largest wuwu. After this, Daiyousei can only select nodes that do not satisfy the above condition, and subsequently, Cirno will inevitably have no nodes left to operate on.To determine whether there exists a node vv outside the subtree of uu such that wv>wuwv>wu, we record the timestamp dfnudfnu when each node is first visited during the DFS traversal of the tree, as well as the timestamp lowulowu when the traversal of its subtree is completed. Since the timestamps outside the subtree form two intervals, namely [1,dfnu)[1,dfnu) and (lowu,n](lowu,n], we need to check whether max(maxdfnv∈[1,dfnu)wv,maxdfnv∈(lowu,n]wv)>wumax(maxdfnv∈[1,dfnu)wv,maxdfnv∈(lowu,n]wv)>wu holds. This can be achieved by maintaining the maximum values in the prefix and suffix.Additionally, we can enumerate the nodes in descending order of wiwi and maintain their lowest common ancestor (LCA). If the LCA of all vv satisfying wv>wuwv>wu is not a descendant of uu, then there must exist a node vv outside the subtree of uu that satisfies wv>wuwv>wu.We can also enumerate the nodes in descending order of wiwi and maintain their minimum and maximum dfnidfni, namely mn,mxmn,mx. According to the conclusion above, we can check whether mn<dfnumn<dfnu or mx>lowumx>lowu holds. If either condition holds, then there must exist a node vv outside the subtree of uu that satisfies wv>wuwv>wu.",
+        "code": "for _ in range(int(input())):\n\tn = int(input())\n\tw=[int(x) for x in input().split()]\n\twb=[[] for i in range(n)]\n\tfor i in range(n):\n\t\tw[i]-=1\n\t\twb[w[i]].append(i)\n\te=[[] for i in range(n)]\n\tfor i in range(n-1):\n\t\tu,v=map(int,input().split())\n\t\te[u-1].append(v-1)\n\t\te[v-1].append(u-1)\n\tstk=[0]\n\tf,dfn=[-1]*n,[0]*n\n\tnfd=[]\n\twhile stk:\n\t\tu=stk.pop()\n\t\tdfn[u]=len(nfd)\n\t\tnfd.append(u)\n\t\tfor v in e[u]:\n\t\t\tif v!=f[u]:\n\t\t\t\tf[v]=u\n\t\t\t\tstk.append(v)\n\tsz=[1]*n\n\tnfd.reverse()\n\tfor u in nfd:\n\t\tif u==0:\n\t\t\tcontinue\n\t\tsz[f[u]]+=sz[u]\n\twb.reverse()\n\tmx=-1;mn=n+1\n\tfor v in wb:\n\t\tfor u in v:\n\t\t\tif mn<dfn[u] or mx>dfn[u]+sz[u]-1:\n\t\t\t\tprint(u+1)\n\t\t\t\tbreak\n\t\telse:\n\t\t\tfor u in v:\n\t\t\t\tmn=min(mn,dfn[u])\n\t\t\t\tmx=max(mx,dfn[u])\n\t\t\tcontinue\n\t\tbreak\n\telse:\n\t\tprint(0)"
+    }
+}

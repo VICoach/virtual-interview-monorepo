@@ -1,0 +1,25 @@
+{
+    "problem": {
+        "title": "Preparing for the Exam",
+        "description": "Monocarp is preparing for his first exam at the university. There are n different questions which can be asked during the exam, numbered from 1 to n . There are m different lists of questions; each list consists of exactly n − 1 different questions. Each list i is characterized by one integer a i , which is the index of the only question which is not present in the i -th list. For example, if n = 4 and a i = 3 , the i -th list contains questions [ 1 , 2 , 4 ] . During the exam, Monocarp will receive one of these m lists of questions. Then, the professor will make Monocarp answer all questions from the list. So, Monocarp will pass only if he knows all questions from the list. Monocarp knows the answers for k questions q 1 , q 2 , … , q k . For each list, determine if Monocarp will pass the exam if he receives that list.",
+        "input_specification": "The first line contains one integer t (1≤t≤104) — the number of test cases.Each test case consists of three lines: the first line contains three integers n, m and k (2≤n≤3⋅105; 1≤m,k≤n); the second line contains m distinct integers a1,a2,…,am (1≤ai≤n; ai<ai+1); the third line contains k distinct integers q1,q2,…,qk (1≤qi≤n; qi<qi+1). Additional constraints on the input: the sum of n over all test cases does not exceed 3⋅105.",
+        "output_specification": "For each test case, print a string of m characters. The i-th character should be 1 if Monocarp passes the exam if he receives the i-th question list, 0 if Monocarp won't pass.",
+        "time_limit": "1.5 seconds",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "constructive algorithms",
+            "implementation"
+        ],
+        "examples": [
+            {
+                "input": "4\n4 4 3\n1 2 3 4\n1 3 4\n5 4 3\n1 2 3 4\n1 3 4\n4 4 4\n1 2 3 4\n1 2 3 4\n2 2 1\n1 2\n2",
+                "output": "0100\n0000\n1111\n10\n"
+            }
+        ],
+        "difficulty": "easy"
+    },
+    "solution": {
+        "description": "2051C - Preparing for the ExamFor every question list, we should check if Monocarp knows all questions from the list, i. e. all numbers 1,2,…,ai−1,ai+1,…,n1,2,…,ai−1,ai+1,…,n appear in the list [q1,q2,…,qk][q1,q2,…,qk]. Searching for every number in the list qq naively is too slow; instead, we can make a boolean array such that the jj-th element in it is true if and only if Monocarp knows the jj-th question. That way, we can check if an integer appears in the list qq in O(1)O(1).However, that is not enough, since every list of questions contains O(n)O(n) questions, and there are O(n)O(n) lists. We need to use the fact that every list contains exactly n−1n−1 questions somehow.If Monocarp knows all nn questions, he can answer any question list (since he knows everything). If Monocarp knows n−2n−2 questions or less, he cannot pass at all, since every question list contains more questions than he knows. The only case that's left if when k=n−1k=n−1, i. e. Monocarp knows all questions except for one. Let's analyze it in more detail (the two next paragraphs will assume that k=n−1k=n−1).Since every question list has the same size as the set of questions known by Monocarp, then in order for Monocarp to pass the exam, these two sets of questions must be equal. However, checking that they are equal by iterating on their contents is too slow; instead, we will check that two sets of questions are different by using the elements which are absent from them.Let's check if Monocarp knows the question aiai. If he does, then the ii-th list of questions is different from the set of questions he knows, so he can't pass. But if Monocarp doesn't know the aiai-th question, then he knows every question which is not aiai, so he can pass. So, Monocarp knows the ii-th question list if and only if he does not know the aiai-th question, and this can be checked in O(1)O(1).This way, we get a solution working in O(n)O(n) on each test case.",
+        "code": "for _ in range(int(input())):\n    n, m, k = map(int, input().split())\n    a = list(map(int, input().split()))\n    q = list(map(int, input().split()))\n    used = [False for i in range(n + 1)]\n    for i in q:\n        used[i] = True\n    l = len(q)\n    for i in range(m):\n        if l == n or (l == n-1 and not used[a[i]]):\n            print(1, end='')\n        else:\n            print(0, end='')\n    print()"
+    }
+}

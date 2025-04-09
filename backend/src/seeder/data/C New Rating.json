@@ -1,0 +1,27 @@
+{
+    "problem": {
+        "title": "New Rating",
+        "description": "Hello, Codeforces Forcescode! Kevin used to be a participant of Codeforces. Recently, the KDOI Team has developed a new Online Judge called Forcescode. Kevin has participated in n contests on Forcescode. In the i -th contest, his performance rating is a i . Now he has hacked into the backend of Forcescode and will select an interval [ l , r ] ( 1 ≤ l ≤ r ≤ n ), then skip all of the contests in this interval. After that, his rating will be recalculated in the following way: Initially, his rating is x = 0 ; For each 1 ≤ i ≤ n , after the i -th contest, If l ≤ i ≤ r , this contest will be skipped, and the rating will remain unchanged; Otherwise, his rating will be updated according to the following rules: If a i > x , his rating x will increase by 1 ; If a i = x , his rating x will remain unchanged; If a i < x , his rating x will decrease by 1 . You have to help Kevin to find his maximum possible rating after the recalculation if he chooses the interval [ l , r ] optimally. Note that Kevin has to skip at least one contest.",
+        "input_specification": "Each test contains multiple test cases. The first line of the input contains a single integer tt (1≤t≤5⋅1041≤t≤5⋅104) — the number of test cases. The description of test cases follows.The first line of each test case contains a single integer nn (1≤n≤3⋅1051≤n≤3⋅105) — the number of contests.The second line contains nn integers a1,a2,…,ana1,a2,…,an (1≤ai≤n1≤ai≤n) — the performance ratings in the contests.It is guaranteed that the sum of nn over all test cases does not exceed 3⋅1053⋅105.",
+        "output_specification": "For each test case, output a single integer — the maximum possible rating after the recalculation if Kevin chooses the interval optimally.",
+        "time_limit": "2 seconds",
+        "memory_limit": "512 megabytes",
+        "tags": [
+            "binary search",
+            "data structures",
+            "dp",
+            "greedy"
+        ],
+        "examples": [
+            {
+                "input": "5\n6\n1 2 3 4 5 6\n7\n1 2 1 1 1 3 4\n1\n1\n9\n9 9 8 2 4 4 3 5 3\n10\n1 2 3 4 1 3 2 1 1 10",
+                "output": "5\n4\n0\n4\n5\n"
+            }
+        ],
+        "difficulty": "hard"
+    },
+    "solution": {
+        "description": "Hint 1Binary search. Hint 2Do something backward. SolutionFirst, do binary search on the answer. Suppose we're checking whether the answer can be ≥k now.Let fi be the current rating after participating in the 1-st to the i-th contest (without skipping).Let gi be the minimum rating before the i-th contest to make sure that the final rating is ≥k (without skipping).fi-s can be calculated easily by simulating the process in the statement. For gi-s, it can be shown that gi={gi+1−1,ai≥gi+1gi+1+1,ai<gi+1where gn+1=k.Then, we should check if there exists an interval [l,r] (1≤l≤r≤n), such that fl−1≥gr+1. If so, we can choose to skip [l,r] and get a rating of ≥k. Otherwise, it is impossible to make the rating ≥k.We can enumerate on r and use a prefix max to check whether valid l exists.Time complexity: O(nlogn) per test case.",
+        "code": "for _ in range(int(input())):\n    n = int(input())\n    \n    def f(a, x):\n        return a + (a < x) - (a > x)\n    \n    dp = [0, -n, -n]\n    for x in map(int, input().split()):\n        dp[2] = max(f(dp[1], x), f(dp[2], x))\n        dp[1] = max(dp[1], dp[0])\n        dp[0] = f(dp[0], x)\n\n    print(max(dp[1], dp[2]))"
+    }
+}

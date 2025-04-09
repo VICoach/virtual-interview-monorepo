@@ -1,0 +1,31 @@
+{
+    "problem": {
+        "title": "Remove Exactly Two",
+        "description": "Recently, Little John got a tree from his aunt to decorate his house. But as it seems, just one tree is not enough to decorate the entire house. Little John has an idea. Maybe he can remove a few vertices from the tree. That will turn it into more trees! Right? You are given a tree ∗ of n vertices. You must perform the following operation exactly twice . Select a vertex v ; Remove all edges incident to v , and also the vertex v . Please find the maximum number of connected components after performing the operation exactly twice . Two vertices x and y are in the same connected component if and only if there exists a path from x to y . For clarity, note that the graph with 0 vertices has 0 connected components by definition. † ∗ A tree is a connected graph without cycles. † But is such a graph connected?",
+        "input_specification": "Each test contains multiple test cases. The first line contains the number of test cases t (1≤t≤104). The description of the test cases follows. The first line of each test case contains a single integer n (2≤n≤2⋅105).Each of the next n−1 lines contains two integers ui and vi, denoting the two vertices connected by an edge (1≤ui,vi≤n, ui≠vi). It is guaranteed that the given edges form a tree.It is guaranteed that the sum of n over all test cases does not exceed 2⋅105.",
+        "output_specification": "For each test case, output the maximum number of connected components on a separate line.",
+        "time_limit": "2 seconds",
+        "memory_limit": "256 megabytes",
+        "tags": [
+            "brute force",
+            "data structures",
+            "dfs and similar",
+            "dp",
+            "graphs",
+            "greedy",
+            "sortings",
+            "trees"
+        ],
+        "examples": [
+            {
+                "input": "3\n2\n1 2\n4\n1 2\n2 3\n2 4\n7\n1 2\n1 3\n2 4\n4 5\n5 6\n5 7",
+                "output": "0\n2\n4\n"
+            }
+        ],
+        "difficulty": "medium"
+    },
+    "solution": {
+        "description": "2063C - Remove Exactly TwoThe main observation behind this task is that the number of connected components increases by deg−1, where deg is the degree of the removed vertex at the time of removing. Thus, the number of connected components after removing two vertices i and j is: di+dj−1 if i and j are not adjacent; di+dj−2 if i and j are adjacent, because removing i will decrease deg of j by 1. The main approaches in maximizing this appear only after this observation. There are multiple approaches to this, where the editorial will introduce two of them. First Approach: Bruteforcing the First Vertex You can maintain a sorted version of the degree sequence, using a std::multiset, a heap, or possibly even simply a sorted sequence.After you fix the first vertex i, you can find the maximum degree after decreasing the degrees of all adjacent vertices by 1. std::multiset can deal with this directly by removing and inserting values, while a heap or a sorted sequence can deal with this by popping elements from the end while the two maximums have the same value. Then, the second vertex is easily the one with maximum degree.Maintaining the degrees takes O(dlogn) time. As ∑d=2m=2(n−1)=O(n), the total time complexity of this approach is O(nlogn). Second Approach: Bruteforcing the Second Vertex If we greedily select the first vertex by degree, we can notice that selecting the first vertex as one with maximum initial degree will find at least one optimal solution. Assume that the first vertex with maximum degree had a maximum value di+dj−2. Then, consider any solution with both vertices' initial degrees strictly less than di. This second solution's maximum possible value di′+dj′−1 will never exceed di+dj−2, because di′<di and dj′≤dj. Thus, at least one optimal answer must have the first vertex as one with maximum initial degree.But we do not know what to do when there are multiple first vertices with maximum initial degree. Luckily, trying only two first vertices with maximum initial degrees will always find one optimal answer. This can be proven by contradiction; If the two first vertices are u and v, and the second vertex chosen in the bruteforce is w. At least one pair in (u,v), (u,w), (v,w) will be not adjacent, because otherwise it implies the existence of a 3-cycle, which can only exist if the graph is not a tree. Thus, if the optimal solution is in the form du+dw−1, trying two first vertices will always find it.Therefore, we can try two vertices greedily for the first vertex and try all other vertices as the second vertex, finding at least one optimal answer in the process.The time complexity of this approach is O(nlogn) or O(n) depending on how adjacency is checked. Adjacency check in O(1) is possible by preprocessing parents using DFS, because \"u and v are adjacent\" is equivalent to \"paru=v or parv=u\".",
+        "code": "import sys\ninput=lambda:sys.stdin.readline().rstrip()\nfor i in range(int(input())):\n    n=int(input())\n    deg=[0]*n\n    adj=[[] for i in range(n)]\n    for i in range(n-1):\n        u,v=map(int,input().split())\n        u-=1;v-=1\n        deg[u]+=1\n        deg[v]+=1\n        adj[u].append(v)\n        adj[v].append(u)\n    ans=1\n    mans=0\n    sdeg=sorted(deg)\n    for i in range(n):\n        ans=deg[i]\n        ideg=[]\n        for v in adj[i]:\n            ideg.append(deg[v])\n        ideg.append(deg[i])\n        ideg.sort(reverse=True)\n        rem=[]\n        mx=-1\n        for d in ideg:\n            if sdeg[-1]==d:\n                sdeg.pop()\n                rem.append(d)\n        rem.reverse()\n        if sdeg:\n            mx=max(mx,sdeg[-1])\n        for v in adj[i]:\n            mx=max(mx,deg[v]-1)\n        for d in rem:\n            sdeg.append(d)\n        mans=max(ans+mx-1,mans)\n    print(mans)"
+    }
+}
