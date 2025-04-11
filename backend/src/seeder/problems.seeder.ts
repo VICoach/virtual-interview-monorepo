@@ -83,4 +83,12 @@ async function seed() {
   }
 }
 
-void seed();
+(async () => {
+  try {
+    await seed();
+  } catch (error) {
+    const logger = new Logger('Seeder');
+    logger.error('Unhandled error during seeding:', error);
+    process.exit(1);
+  }
+})();
