@@ -21,6 +21,7 @@
     "seed:problems": "ts-node src/seeder/problems.seeder.ts"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.0",
     "@nestjs/class-transformer": "^0.4.0",
     "@nestjs/class-validator": "^0.13.4",
     "@nestjs/common": "^11.0.1",
