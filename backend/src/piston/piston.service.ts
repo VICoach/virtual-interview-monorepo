@@ -9,13 +9,7 @@ import { lastValueFrom } from 'rxjs';
 import type { AxiosError } from 'axios';
 import { PistonExecuteDto } from './dto/piston-execute.dto';
 import { LanguageVersions } from './enums/language.enum';
-
-interface PistonExecuteResponse {
-  run: {
-    stdout: string;
-    stderr: string;
-  };
-}
+import { PistonExecutionResponse } from './interfaces/piston-execution-response.interface';
 
 @Injectable()
 export class PistonService {
@@ -28,8 +22,7 @@ export class PistonService {
     dto: PistonExecuteDto,
   ): Promise<{ stdout: string; stderr: string }> {
     this.logger.log(`Executing code in ${dto.language}`);
-    this.logger.debug(`Code: ${dto.code}`);
-    this.logger.debug(`Input: ${dto.stdin}`);
+    // this.logger.debug('dto: ', dto);
 
     const version = LanguageVersions[dto.language];
     if (!version) {
@@ -39,21 +32,23 @@ export class PistonService {
 
     try {
       const response = await lastValueFrom(
-        this.httpService.post<PistonExecuteResponse>(
+        this.httpService.post<PistonExecutionResponse>(
           `${this.pistonBaseUrl}/execute`,
           {
             language: dto.language,
             version,
             files: [{ content: dto.code }],
             stdin: dto.stdin,
+            run_timeout: dto.time_limit,
+            run_memory_limit: dto.memory_limit,
           },
         ),
       );
 
-      this.logger.debug(
-        `Code execution completed for ${dto.language} ` +
-          `(Status: ${response.status})`,
-      );
+      // this.logger.debug(
+      //   `Code execution completed for ${dto.language} ` +
+      //     `(Status: ${response.status})`,
+      // );
 
       return {
         stdout: response.data.run.stdout.trim() || '',

@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 import { Language } from '../enums/language.enum';
 
 export class PistonExecuteDto {
@@ -10,4 +10,10 @@ export class PistonExecuteDto {
 
   @IsString()
   stdin: string;
+
+  @IsNumber()
+  time_limit: number;
+
+  @IsNumber()
+  memory_limit: number;
 }
