@@ -1,11 +1,20 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { RunProblemDto } from './dto/run-problem.dto';
-import { ApiTags, ApiResponse, ApiOperation, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiResponse,
+  ApiOperation,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { TechnicalProblemsService } from './technical-problems.service';
 import { CodeExecutionResult } from './interfaces/code-execution-result.interface';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('Technical Problems')
 @Controller('problems')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('access-token')
 export class TechnicalProblemsController {
   constructor(private readonly problemsService: TechnicalProblemsService) {}
 
