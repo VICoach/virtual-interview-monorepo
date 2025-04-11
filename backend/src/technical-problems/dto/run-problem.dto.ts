@@ -1,5 +1,5 @@
 import { IsNumber, IsString, IsEnum, IsDefined } from 'class-validator';
-import { Language } from 'src/piston/enums/language.enum';
+import { Language } from '../../piston/enums/language.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RunProblemDto {

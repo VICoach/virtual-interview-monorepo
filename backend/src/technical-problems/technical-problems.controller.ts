@@ -9,7 +9,7 @@ import {
 } from '@nestjs/swagger';
 import { TechnicalProblemsService } from './technical-problems.service';
 import { CodeExecutionResult } from './interfaces/code-execution-result.interface';
-import { JwtAuthGuard } from 'src/auth/auth.guard';
+import { JwtAuthGuard } from '../auth/auth.guard';
 
 @ApiTags('Technical Problems')
 @Controller('problems')

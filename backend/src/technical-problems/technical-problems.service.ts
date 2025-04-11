@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { PistonService } from '../piston/piston.service';
 import { RunProblemDto } from './dto/run-problem.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CodeExecutionResult } from './interfaces/code-execution-result.interface';
 
 @Injectable()
