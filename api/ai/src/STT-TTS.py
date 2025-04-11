@@ -4,6 +4,7 @@ import IPython.display as ipd
 import time
 from elevenlabs import ElevenLabs
 import gdown
+import soundfile as sf
 
 # Extract the file from the Google Drive link
 file_id = "1--pzotRY7K8y_lr6CniVr4wJa9_fvhhS"
@@ -12,9 +13,10 @@ gdown.download(f"https://drive.google.com/uc?id={file_id}", AUDIO_FILE, quiet=Fa
 GROQ_API_KEY = "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"
 GROQ_MODEL = "llama-3.3-70b-versatile"
 GROQ_WHISPER_MODEL = "whisper-large-v3"
-ELEVENLABS_API_KEY = "sk_8be7748ac2a9dd3d3fedb1b62a1b8dffb6a33f8a8958eaf8"
-ELEVENLABS_VOICE_ID = "JBFqnCBsd6RMkjVDRZzb"  # Set to your preferred ElevenLabs voice ID
-ELEVENLABS_MODEL_ID = "eleven_multilingual_v2"
+GROQ_TTS_MODEL = "playai-tts"
+#ELEVENLABS_API_KEY = "sk_8be7748ac2a9dd3d3fedb1b62a1b8dffb6a33f8a8958eaf8"
+#ELEVENLABS_VOICE_ID = "JBFqnCBsd6RMkjVDRZzb"  # Set to your preferred ElevenLabs voice ID
+#ELEVENLABS_MODEL_ID = "eleven_multilingual_v2"
 
 # Step 1: Asynchronous Speech-to-Text (STT) using Groq Whisper
 async def transcribe_audio(audio_path):
@@ -50,7 +52,7 @@ async def get_ai_feedback(user_response):
 
 # Step 3: Stream TTS response using ElevenLabs
 async def stream_speech(text):
-    start_time = time.time()
+    """start_time = time.time()
     client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
 
     # Get streaming audio
@@ -77,8 +79,52 @@ async def stream_speech(text):
         ipd.display(ipd.Audio(buffer, rate=44100, autoplay=True))
 
     elapsed_time = time.time() - start_time
-    print(f"TTS Streaming Time: {elapsed_time:.2f} seconds")
+    print(f"TTS Streaming Time: {elapsed_time:.2f} seconds")"""
 
+    start_time = time.time()
+
+    # Step 1: Request audio from PlayHT-TTS via Groq
+    url = "https://api.groq.com/openai/v1/audio/speech"
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": GROQ_TTS_MODEL,
+        "input": text,
+        "voice": "Chip-PlayAI",  # Customize as needed
+        "response_format": "wav"
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    if response.status_code != 200:
+        print("Error generating speech:", response.json())
+        return
+
+    # Step 2: Load audio into memory
+    audio_bytes = io.BytesIO(response.content)
+    data, samplerate = sf.read(audio_bytes)
+
+    # Step 3: Simulate streaming by chunking the audio
+    chunk_duration = 0.5  # seconds
+    chunk_size = int(chunk_duration * samplerate)
+    
+    num_chunks = len(data) // chunk_size + (1 if len(data) % chunk_size != 0 else 0)
+
+    for i in range(num_chunks):
+        start = i * chunk_size
+        end = start + chunk_size
+        chunk_data = data[start:end]
+
+        if len(chunk_data) == 0:
+            continue
+
+        # Play the chunk
+        ipd.display(ipd.Audio(chunk_data, rate=samplerate, autoplay=True))
+        await asyncio.sleep(chunk_duration)
+
+    elapsed_time = time.time() - start_time
+    print(f"TTS Streaming Time: {elapsed_time:.2f} seconds")
 
 
 # Run the process asynchronously
