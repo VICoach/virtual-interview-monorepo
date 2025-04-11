@@ -5,6 +5,7 @@ import time
 from elevenlabs import ElevenLabs
 import gdown
 import soundfile as sf
+import io
 
 # Extract the file from the Google Drive link
 file_id = "1--pzotRY7K8y_lr6CniVr4wJa9_fvhhS"
@@ -37,8 +38,8 @@ async def get_ai_feedback(user_response):
     start_time = time.time()
     prompt = (
         "You are an AI interview coach. A candidate has answered the question: 'Tell me about yourself.' "
-        "Provide a brief analysis of their response, highlighting their key strengths and areas for improvement."
-        "Keep your feedback structured, concise, and actionable.\n\n"
+        "Analyze their response briefly and concisely. Summarize the key strengths and the areas for improvement "
+        "in a short, structured response.\n\n"
         f"Candidate's response: {user_response}"
     )
     url = "https://api.groq.com/openai/v1/chat/completions"

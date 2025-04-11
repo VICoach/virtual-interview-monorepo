@@ -4,3 +4,4 @@ nest-asyncio
 elevenlabs
 gdown
 io
+requests
