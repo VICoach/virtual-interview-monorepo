@@ -3,7 +3,7 @@ import websockets
 
 async def client():
     async with websockets.connect(
-        "ws://localhost:8765",
+        "ws://localhost:8080/ws",
         ping_interval=3600,  
         ping_timeout=3600
         ) as websocket:
@@ -15,4 +15,5 @@ async def client():
             response = await websocket.recv()
             print(f"Interviewer: {response}")
 
-asyncio.run(client())
+if __name__ == "__main__":
+    asyncio.run(client())

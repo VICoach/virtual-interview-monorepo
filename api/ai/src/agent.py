@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 import nest_asyncio
 # Load environment variables from .env file
 load_dotenv()
+nest_asyncio.apply()
+
 # Initialize Groq client
 client = groq.Client(api_key=os.getenv("GROQ_API_KEY"))
 
@@ -100,4 +102,5 @@ async def start_server():
         await asyncio.Future()  # Keep the server running
 
 # Run the WebSocket server
-asyncio.run(start_server())
+if __name__ == "__main__":
+    asyncio.run(start_server())
