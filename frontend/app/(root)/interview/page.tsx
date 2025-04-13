@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Replace icon components with image components - positioned to straddle card edge
+// TODO:move constants to a separate file
 const MockInterviewIcon = () => (
   <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 flex justify-center items-center  rounded-full">
     <Image 
