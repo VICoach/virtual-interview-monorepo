@@ -9,21 +9,18 @@ import {
 
 export default function DashLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="">
-    <main className="flex h-screen min-h-screen overflow-hidden   sm:bg-cover sm:bg-center sm:bg-no-repeat">
+    
+    <main className="flex min-h-full  app-background bg-[url('/home-bg.png')] bg-cover bg-no-repeat bg-center">
     <SidebarProvider>
       <MobileNavigation />
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-          </div>
-        </header>
+        
         {children}
       </SidebarInset>
     </SidebarProvider>
     </main>
-    </div>
+    
   )
 }
 

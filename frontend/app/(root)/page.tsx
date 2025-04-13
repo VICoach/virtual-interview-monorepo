@@ -1,3 +1,5 @@
 export default function Home() {
-  return <div className="flex flex-1 flex-col gap-4 p-4 pt-0">Hello</div>;
+  return <div className="app-background flex flex-1 flex-col gap-4 p-4 pt-0">
+    <h1 className="text-white">Hello</h1>
+    </div>;
 }

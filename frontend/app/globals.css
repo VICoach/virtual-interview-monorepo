@@ -136,6 +136,82 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+@layer utilities {
+  /* Root background */
+  .app-background {
+    @apply bg-[url('/home-bg.png')] bg-cover bg-center bg-no-repeat;
+  }
+}
+@layer components {
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+  }
+  
+  .glass-container {
+    background: rgba(11, 36, 71, 0.6);
+    backdrop-filter: blur(20px);
+    border-radius: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  }
+  
+  .gradient-bg {
+    @apply bg-[url('/home-bg.png')] bg-cover bg-center bg-no-repeat
+  }
+  
+  .card-option {
+    background: rgba(23, 45, 82, 0.6);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .card-option:hover {
+    background: rgba(34, 67, 123, 0.8);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 242, 254, 0.1);
+  }
+  
+  .start-btn {
+    background: rgba(20, 38, 70, 0.6);
+    color: white;
+    border-radius: 999px;
+    transition: all 0.3s ease;
+    background-size: 150% auto;
+  }
+  
+  .start-btn:hover {
+    background-position: right center;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+  }
+  
+  .text-gradient {
+    background: linear-gradient(45deg, #4FACFE, #00F2FE);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .animate-float {
+    animation: float 12s ease-in-out infinite;
+  }
+  
+  .animate-float-delayed {
+    animation: float 14s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+  
+  
+  
+  .step-indicator {
+    @apply w-6 h-6 rounded-full bg-gray-500 flex items-center justify-center text-xs font-bold;
+  }
+  
+  .step-connector {
+    @apply w-8 h-px bg-gray-500;
+  }
+}
+
 
 @layer base {
   * {

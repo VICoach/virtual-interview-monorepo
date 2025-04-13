@@ -49,7 +49,7 @@ export default function MobileNavigation() {
       <div className="flex items-center justify-between">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <button className="text-blue-dark p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <button className="text-white p-2 hover:bg-white/10 rounded-lg transition-colors">
               <Menu className="h-6 w-6" />
               <span className="sr-only">Toggle Menu</span>
             </button>
