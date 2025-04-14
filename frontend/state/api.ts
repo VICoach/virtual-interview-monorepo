@@ -8,7 +8,7 @@ const customBaseQuery = async (
   extraOptions: any,
 ) => {
   const baseQuery = fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api",
+    baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
     prepareHeaders: async (headers) => {
       const token = localStorage.getItem("token");
       if (token) {

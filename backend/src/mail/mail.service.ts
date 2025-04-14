@@ -17,7 +17,7 @@ export class MailerService {
       throw new Error('SENDGRID_FROM_EMAIL is not defined');
     }
 
-    const verificationUrl = `http://localhost:frontendport/verify-email?token=${token}`;
+    const verificationUrl = `${process.env.FRONT_URL}/verify-email?token=${token}`;
 
     const msg = {
       to: email,
@@ -50,7 +50,7 @@ export class MailerService {
         ? Buffer.from(resetToken).toString('base64')
         : resetToken;
 
-    const resetUrl = `http://localhost:frontendport/reset-password?token=${tokenString}`;
+    const resetUrl = `${process.env.FRONT_URL}/reset-password?token=${tokenString}`;
 
     const msg = {
       to: email,

@@ -5,13 +5,17 @@ services:
       - "4000:3000"
     depends_on:
       - db
+
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      
+    env_file:
+      - backend/.env
 
   db:
     image: postgres:latest
     ports:
-      - "5432:5432"
+      - "5434:5432"
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -20,11 +24,17 @@ services:
       - db_data:/var/lib/postgresql/data
 
   frontend:
-    build: ./frontend
+    build: 
+      context: 
+        ./frontend
+      args:
+        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
     ports:
       - "3000:3000"
     depends_on:
       - backend
+    env_file:
+      - frontend/.env
 
   api:
     build: ./api
