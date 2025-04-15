@@ -30,6 +30,7 @@ describe('UsersController', () => {
     accountType: ['USER'],
     email_confirmed: false,
     password: 'hashedPassword',
+    provider_id: null,
     refresh_token: null,
     access_token: null,
     verify_token: null,

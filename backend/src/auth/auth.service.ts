@@ -12,7 +12,15 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../users/entities/user.entity';
+import { v4 as uuidv4 } from 'uuid';
 import { MailerService } from '../mail/mail.service';
+import { ProviderType } from '@prisma/client';
+
+interface ProviderWithUser {
+  provider_id: string;
+  type: ProviderType;
+  User: User[];
+}
 
 @Injectable()
 export class AuthService {
@@ -28,6 +36,13 @@ export class AuthService {
     const user = await this.usersService.findUserByEmail(loginDto.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Check if user was created through OAuth
+    if (!user.password) {
+      throw new UnauthorizedException(
+        'This account was created through social login. Please use the appropriate social login method.',
+      );
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -61,6 +76,12 @@ export class AuthService {
   }
 
   async register(registerDto: CreateUserDto) {
+    if (!registerDto.password) {
+      throw new BadRequestException(
+        'Password is required for regular registration',
+      );
+    }
+
     // Validate password strength
     if (!this.isPasswordStrong(registerDto.password)) {
       throw new BadRequestException(
@@ -83,10 +104,12 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 12);
+    const verifyToken: string = uuidv4(); // Generate a unique verification token
 
     const user = await this.usersService.createUser({
       ...registerDto,
       password: hashedPassword,
+      verify_token: verifyToken,
       email_confirmed: false,
     });
 
@@ -301,6 +324,93 @@ export class AuthService {
     await this.mailerService.sendVerificationEmail(user.email, verifyToken);
   }
 
+  async validateOAuthLogin(userData: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    provider: {
+      provider_id: string;
+      type: ProviderType;
+    };
+  }): Promise<{ access_token: string; refresh_token: string }> {
+    // 1. Check if provider already exists
+    const existingProvider = (await this.prismaService.provider.findFirst({
+      where: {
+        provider_id: userData.provider.provider_id,
+        type: userData.provider.type,
+      },
+      include: {
+        User: true,
+      },
+    })) as ProviderWithUser | null;
+
+    // 2. If provider exists, use the associated user
+    if (existingProvider && existingProvider.User.length > 0) {
+      const user = existingProvider.User[0];
+      return this.generateTokensForUser(user);
+    }
+
+    // 3. Check if email exists
+    const existingUser = await this.usersService.findUserByEmail(
+      userData.email,
+    );
+
+    // 4. If user exists but provider doesn't, link them
+    if (existingUser) {
+      await this.prismaService.provider.create({
+        data: {
+          provider_id: userData.provider.provider_id,
+          type: userData.provider.type,
+          User: {
+            connect: { user_id: existingUser.user_id },
+          },
+        },
+      });
+      return this.generateTokensForUser(existingUser);
+    }
+
+    // 5. Create new user and provider if neither exists
+    const newUser = await this.usersService.createUser({
+      email: userData.email,
+      first_name: userData.firstName,
+      last_name: userData.lastName,
+      username: userData.email.split('@')[0],
+      password: null, // No password for OAuth users
+      email_confirmed: true,
+    });
+
+    await this.prismaService.provider.create({
+      data: {
+        provider_id: userData.provider.provider_id,
+        type: userData.provider.type,
+        User: {
+          connect: { user_id: newUser.user_id },
+        },
+      },
+    });
+
+    return this.generateTokensForUser(newUser);
+  }
+
+  private async generateTokensForUser(
+    user: User,
+  ): Promise<{ access_token: string; refresh_token: string }> {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.generateAccessToken(user),
+      this.generateRefreshToken(user),
+    ]);
+
+    await this.usersService.updateUser(user.user_id, {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    };
+  }
+
   private generateAccessToken(user: User) {
     const payload = {
       sub: user.user_id,
@@ -316,7 +426,6 @@ export class AuthService {
   private generateRefreshToken(user: User) {
     const payload = {
       sub: user.user_id,
-      accountType: user.accountType,
       type: 'refresh',
     };
     return this.jwtService.sign(payload, {
@@ -328,7 +437,6 @@ export class AuthService {
   private generateResetPassToken(user: User) {
     const payload = {
       sub: user.user_id,
-      accountType: user.accountType,
       type: 'reset',
     };
 
