@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module';
 import { MailerModule } from '../mail/mail.module';
-import { GoogleStrategy } from './strategies/googleStrategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports: [

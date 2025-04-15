@@ -9,7 +9,7 @@ import { MailerService } from '../mail/mail.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { BadRequestException } from '@nestjs/common';
-import { ProviderType } from './provider/providerType.enum';
+import { ProviderType } from '@prisma/client';
 
 describe('AuthService', () => {
   let service: AuthService;

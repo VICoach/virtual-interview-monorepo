@@ -14,7 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import { User } from '../users/entities/user.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { MailerService } from '../mail/mail.service';
-import { ProviderType } from './provider/providerType.enum';
+import { ProviderType } from '@prisma/client';
 
 interface ProviderWithUser {
   provider_id: string;

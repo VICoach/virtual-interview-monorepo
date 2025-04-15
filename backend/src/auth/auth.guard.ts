@@ -13,26 +13,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const request = context.switchToHttp().getRequest<Request>();
     const authHeader = request.headers['authorization'];
 
-    if (!authHeader) {
-      throw new UnauthorizedException('No authorization header found');
-    }
-
-    const parts = authHeader.split(' ');
-
-    if (parts.length !== 2) {
-      throw new UnauthorizedException('Invalid authorization header format');
-    }
-
-    const [type, token] = parts;
-
-    if (type !== 'Bearer') {
+    if (!authHeader?.startsWith('Bearer ')) {
       throw new UnauthorizedException(
-        'Authorization header must be Bearer token',
+        'Invalid or missing authorization header',
       );
-    }
-
-    if (!token) {
-      throw new UnauthorizedException('No token provided');
     }
 
     return super.canActivate(context);
