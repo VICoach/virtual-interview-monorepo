@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Interview WebSocket Client</title>
+</head>
+
+<body>
+    <h2>🎧 Upload an audio file</h2>
+    <input type="file" id="audioInput" accept="audio/*" />
+    <button onclick="sendAudio()">Send to Interview Agent</button>
+
+    <h3>🧠 Agent Response</h3>
+    <p id="agentText">Waiting...</p>
+    <audio id="agentAudio" controls></audio>
+
+    <script>
+        async function sendAudio() {
+            const fileInput = document.getElementById("audioInput");
+            if (fileInput.files.length === 0) {
+                alert("Please upload an audio file.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const arrayBuffer = await file.arrayBuffer();
+
+            const ws = new WebSocket("ws://localhost:8080/ws");
+            ws.binaryType = "arraybuffer";
+
+            ws.onopen = () => {
+                ws.send(arrayBuffer); // Send the uploaded audio as binary
+            };
+
+            ws.onmessage = (event) => {
+                if (typeof event.data === "string") {
+                    // Agent's text response
+                    document.getElementById("agentText").innerText = event.data;
+                } else {
+                    // TTS audio stream
+                    const audioBlob = new Blob([event.data], { type: "audio/wav" });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    document.getElementById("agentAudio").src = audioUrl;
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error("WebSocket error:", error);
+                alert("WebSocket error. Check your backend and port.");
+            };
+        }
+    </script>
+</body>
+
+</html>
