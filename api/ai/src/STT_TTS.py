@@ -4,6 +4,7 @@ import time
 import gdown
 import soundfile as sf
 import io
+from elevenlabs import ElevenLabs
 
 # Extract the file from the Google Drive link
 file_id = "1--pzotRY7K8y_lr6CniVr4wJa9_fvhhS"
@@ -13,6 +14,7 @@ GROQ_API_KEY = "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"
 GROQ_MODEL = "llama-3.3-70b-versatile"
 GROQ_WHISPER_MODEL = "whisper-large-v3"
 GROQ_TTS_MODEL = "playai-tts"
+ELEVEN_LABS_API_KEY="sk_65537218b39432e549f8bbf9b0d4974eff0dad1cbfaf2bff"
 
 # Step 1: Asynchronous Speech-to-Text (STT) using Groq Whisper
 async def transcribe_audio(audio_path):
@@ -30,49 +32,33 @@ async def transcribe_audio(audio_path):
 
 
 # Step 3: Stream TTS response
+elevenlabs_client = None
+
+def connect_elevenlabs():
+    global elevenlabs_client
+    if elevenlabs_client is None:
+        elevenlabs_client = ElevenLabs(api_key=ELEVEN_LABS_API_KEY)
+    return elevenlabs_client
+
+
+def get_elevenlabs_client():
+    connect_elevenlabs()
+    voice_client = elevenlabs_client
+    return voice_client
+
 async def stream_speech(text):
+    """
+    Asynchronously generates and streams audio from ElevenLabs using a generator.
+    Streams MP3 chunks via an async generator.
+    """
+    voice_client = get_elevenlabs_client()
+    audio_generator = voice_client.text_to_speech.convert(
+        voice_id="21m00Tcm4TlvDq8ikWAM",       # Default ElevenLabs voice ID
+        output_format="mp3_22050_32",         # Adjust output format as needed
+        text=text,
+        model_id="eleven_v2_5_flash",
+    )
 
-    start_time = time.time()
-
-    # Step 1: Request audio from PlayHT-TTS via Groq
-    url = "https://api.groq.com/openai/v1/audio/speech"
-    headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "model": GROQ_TTS_MODEL,
-        "input": text,
-        "voice": "Chip-PlayAI",  # Customize as needed
-        "response_format": "wav"
-    }
-
-    response = requests.post(url, json=payload, headers=headers)
-    if response.status_code != 200:
-        print("Error generating speech:", response.json())
-        yield b""
-        return
-
-    # Step 2: Load audio into memory
-    audio_bytes = io.BytesIO(response.content)
-    data, samplerate = sf.read(audio_bytes)
-
-    # Step 3: Simulate streaming by chunking the audio
-    chunk_duration = 0.5  # seconds
-    chunk_size = int(chunk_duration * samplerate)
-    num_chunks = len(data) // chunk_size + (1 if len(data) % chunk_size != 0 else 0)
-
-    for i in range(num_chunks):
-        start = i * chunk_size
-        end = start + chunk_size
-        chunk_data = data[start:end]
-
-        if len(chunk_data) == 0:
-            continue
-
-        # Convert the chunk back to WAV bytes
-        buffer = io.BytesIO()
-        sf.write(buffer, chunk_data, samplerate, format='WAV')
-        yield buffer.getvalue()
-        await asyncio.sleep(chunk_duration)
-        
+    
+    audio_data = b"".join(chunk for chunk in audio_generator)
+    return audio_data
