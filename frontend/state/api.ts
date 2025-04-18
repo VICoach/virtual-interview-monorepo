@@ -97,6 +97,14 @@ export const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    sendVerificationEmail: builder.mutation<ApiResponse, { email: string }>({
+      query: (email) => ({
+        url: "/auth/send-verify-email",
+        method: "POST",
+        body: email,
+      }),
+      invalidatesTags: ["User"],
+    }),
     forgotPassword: builder.mutation({
       query: (email) => ({
         url: "/auth/forgot-password",
@@ -127,6 +135,7 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useVerifyEmailMutation,
+  useSendVerificationEmailMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useGetUserQuery,

@@ -40,3 +40,11 @@ export const userLoginSchema = z
     message: "Password is required",
   });
 export type UserLoginFormData = z.infer<typeof userLoginSchema>;
+
+// Resend Verification Email Schema
+export const resendVerificationEmailSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+export type ResendVerificationEmailFormData = z.infer<
+  typeof resendVerificationEmailSchema
+>;

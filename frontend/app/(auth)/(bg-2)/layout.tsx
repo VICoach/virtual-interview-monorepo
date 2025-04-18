@@ -10,7 +10,7 @@ const AuthLayout = ({ children }: LayoutProps) => (
         style={{ objectPosition: "center bottom" }}
       />
     </div>
-    <div className="container relative mx-auto px-4 md:left-[10%] md:top-20">
+    <div className="container relative mx-auto px-4 md:left-[10%] md:top-40">
       {children}
     </div>
   </main>
