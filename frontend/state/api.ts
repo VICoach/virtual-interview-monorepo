@@ -2,6 +2,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BaseQueryApi, FetchArgs } from "@reduxjs/toolkit/query";
 import { toast } from "sonner";
 
+const skipToastEndpoints = ["verifyEmail"];
+
 const customBaseQuery = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
@@ -19,8 +21,10 @@ const customBaseQuery = async (
   });
   try {
     const result: any = await baseQuery(args, api, extraOptions);
+    const endpointName = api.endpoint ?? "";
+    const shouldSkip = skipToastEndpoints.includes(endpointName);
 
-    if (result.error) {
+    if (!shouldSkip && result.error) {
       const errorData = result.error.data;
       const errorMessage =
         errorData?.message ||
@@ -31,7 +35,7 @@ const customBaseQuery = async (
 
     const isMutationRequest =
       (args as FetchArgs).method && (args as FetchArgs).method !== "GET";
-    if (isMutationRequest) {
+    if (!shouldSkip && isMutationRequest) {
       const messages = [
         result.data?.message,
         result.data?.data?.message,
