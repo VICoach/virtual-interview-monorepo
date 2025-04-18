@@ -85,11 +85,11 @@ export const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    confirmEmail: builder.mutation({
+    verifyEmail: builder.mutation<ApiResponse, { token: string }>({
       query: (token) => ({
-        url: "/auth/confirm-email",
+        url: "/auth/verify-email",
         method: "POST",
-        body: { token },
+        body: token,
       }),
       invalidatesTags: ["User"],
     }),
@@ -122,7 +122,7 @@ export const api = createApi({
 export const {
   useRegisterUserMutation,
   useLoginUserMutation,
-  useConfirmEmailMutation,
+  useVerifyEmailMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useGetUserQuery,

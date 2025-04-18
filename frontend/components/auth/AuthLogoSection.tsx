@@ -4,7 +4,7 @@ import Image from "next/image";
 const AuthLogoSection = ({ title }: AuthLogoSectionProps) => (
   <div className="flex w-full flex-col items-center md:max-w-60">
     <Image
-      src="/logo.png"
+      src="/logo.svg"
       alt="Logo"
       width={180}
       height={180}
