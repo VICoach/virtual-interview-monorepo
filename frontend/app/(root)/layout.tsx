@@ -10,7 +10,7 @@ import {
 export default function DashLayout({ children }: { children: React.ReactNode }) {
   return (
     
-    <main className="flex min-h-full  app-background bg-[url('/home-bg.png')] bg-cover bg-no-repeat bg-center">
+    <main className="flex min-h-full ">
     <SidebarProvider>
       <MobileNavigation />
       <AppSidebar />

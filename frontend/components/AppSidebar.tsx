@@ -2,9 +2,7 @@
 
 import * as React from "react"
 import {
-  Home, 
   History, 
-  Video,
   PlusIcon,
   User,
   Calendar
@@ -21,7 +19,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarTrigger,
-  useSidebar
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import Image from "next/image"
@@ -36,7 +33,6 @@ const data = {
   }}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { state } = useSidebar()
   const pathname = usePathname() 
 
 
@@ -88,7 +84,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </span>
               </Link>
             </SidebarMenuButton>
-            <SidebarTrigger className="ml-auto group-data-[state=collapsed]:ml-0 group-data-[state=collapsed]:static" />
+            <SidebarTrigger className="ml-auto group-data-[state=collapsed]:ml-0 group-data-[state=collapsed]:static " />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -98,10 +94,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem key="plus">
             <SidebarMenuButton 
               asChild 
-              className="hover:bg-white bg-[#5B879E] rounded-2xl"
+              className="hover:bg-white bg-[#5B879E] rounded-full mb-8 mt-10"
               tooltip="Start new interview"
             >
-              <Link href="/interview" className="flex items-center w-full text-white">
+              <Link href="/interview" className="flex items-center w-full text-white py-6 px-4">
                 <PlusIcon className="size-5" />
                 <span className="text-base font-bold ml-2">Start Interview</span>
               </Link>
@@ -111,7 +107,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={navMain} />
       </SidebarContent>
 
-      <SidebarFooter className="p-4">
+      <SidebarFooter >
         <NavUser user={data.user} />
       </SidebarFooter>
       

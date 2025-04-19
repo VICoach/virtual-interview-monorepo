@@ -68,7 +68,7 @@ const InterviewCategories = [
 
 export default function InterviewPage() {
   return (
-    <main className="gradient-bg min-h-screen relative overflow-hidden">
+    <main className="app-background min-h-screen relative overflow-hidden">
       
 
       <div className="container mx-auto px-4 py-16 relative z-10">

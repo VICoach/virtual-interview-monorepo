@@ -2,9 +2,7 @@
 
 import * as React from "react"
 import {
-  Home,
   History,
-  Video,
   PlusIcon,
   Menu,
   Calendar,
@@ -72,7 +70,7 @@ export default function MobileNavigation() {
               <div className="p-4">
                 <Link
                   href="/"
-                  className="flex items-center w-full text-white p-3 mb-4 bg-[#5B879E]  hover:bg-[#4A7A8F] transition-colors rounded-full"
+                  className="flex items-center w-full text-white p-3  bg-[#5B879E]  hover:bg-[#4A7A8F] transition-colors rounded-full mt-10 mb-8"
                   onClick={() => setOpen(false)}
                 >
                   <PlusIcon className="size-5" />
@@ -84,8 +82,8 @@ export default function MobileNavigation() {
                     <Link
                       key={item.title}
                       href={item.url}
-                      className={`flex items-center w-full p-3 rounded-lg transition-all duration-200 ${
-                        item.isActive ? 'bg-white/15' : ''
+                      className={`flex items-center w-full p-3 rounded-full transition-all duration-200 ${
+                        item.isActive ? 'bg-white/15 ' : ''
                       } hover:bg-white/20 group`}
                       onClick={() => setOpen(false)}
                     >
@@ -98,14 +96,7 @@ export default function MobileNavigation() {
               
               <div className="mt-auto p-4 border-t border-white/10">
                 <div className="flex items-center">
-                  <div className="h-10 w-10 rounded-lg bg-gray-200 overflow-hidden">
-                    <Image
-                      src="/avatars/shadcn.jpg"
-                      alt="User"
-                      width={40}
-                      height={40}
-                    />
-                  </div>
+                  
                   {/*TODO:replace by user data*/}
                   <div className="ml-3">
                     <p className="text-sm font-medium">name</p>

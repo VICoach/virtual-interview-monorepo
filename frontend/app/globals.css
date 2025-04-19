@@ -139,7 +139,7 @@
 @layer utilities {
   /* Root background */
   .app-background {
-    @apply bg-[url('/home-bg.png')] bg-cover bg-center bg-no-repeat;
+    @apply bg-[url('/home-bg.png')] bg-fixed bg-cover bg-center bg-no-repeat;
   }
 }
 @layer components {
@@ -156,9 +156,7 @@
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
   }
   
-  .gradient-bg {
-    @apply bg-[url('/home-bg.png')] bg-cover bg-center bg-no-repeat
-  }
+  
   
   .card-option {
     background: rgba(23, 45, 82, 0.6);
