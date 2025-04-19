@@ -266,7 +266,7 @@ const Sidebar = React.forwardRef<
     )
   }
 )
-SIDEBAR_WIDTH
+
 Sidebar.displayName = "Sidebar"
 
 const SidebarTrigger = React.forwardRef<
