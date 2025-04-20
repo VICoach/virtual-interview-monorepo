@@ -1,111 +1,52 @@
 "use client";
 
 import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-
-// TODO:move constants to a separate file
-const MockInterviewIcon = () => (
-  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 flex justify-center items-center  rounded-full">
-    <Image 
-      src="/mock-interview.png" 
-      alt="Mock Interview" 
-      width={40} 
-      height={40}
-      className="object-contain"
-    />
-  </div>
-);
-
-const QAIcon = () => (
-  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 flex justify-center items-center  rounded-full">
-    <Image 
-      src="/qbq-interview.png" 
-      alt="Q&A Practice" 
-      width={50} 
-      height={50}
-      className="object-contain"
-    />
-  </div>
-);
-
-const TechnicalIcon = () => (
-  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 flex justify-center items-center  rounded-full">
-    <Image 
-      src="/technical-inetrview.png" 
-      alt="Technical Interview" 
-      width={50} 
-      height={50}
-      className="object-contain" 
-    />
-  </div>
-);
-
-
-
-
-const InterviewCategories = [
-  { 
-    icon: <MockInterviewIcon />, 
-    title: "Mock Interview", 
-    desc: "Simulate real interviews with role-specific questions, timed conditions, and detailed performance feedback.",
-    link: "/interview/mock-interview"
-  },
-  { 
-    icon: <QAIcon />, 
-    title: "Q&A Practice", 
-    desc: "Focus on single questions with instant feedback. Practice various types, get tips, and refine responses." ,
-    link: "/interview/qbq-interview"
-  },
-  { 
-    icon: <TechnicalIcon />, 
-    title: "Technical Interview", 
-    desc: "Coding challenges with real-time feedback and dynamic constraints to boost problem-solving skills." ,
-    link: "/interview/technical-interview"
-
-  },
-];
+import InterviewCard from '@/components/InterviewCard';
+import InterviewIcon from '@/components/InterviewIcon';
+import { INTERVIEW_OPTIONS, INTERVIEW_STEPS } from '@/constants/interview';
 
 export default function InterviewPage() {
   return (
-    <main className="app-background min-h-screen relative overflow-hidden">
+    <main className="min-h-screen md:h-screen bg-interview-gradient relative overflow-hidden flex items-center justify-center">
       
-
       <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="glass-container max-w-6xl mx-auto">
-          <div className="p-8">
-            <h1 className="text-white text-4xl md:text-5xl font-bold text-center mb-6">
-              Start An Interview
+        <div className="glass-panel max-w-6xl mx-auto rounded-3xl overflow-hidden backdrop-blur-lg bg-navy-blue-transparent border border-white/10">
+          <div className="p-10">
+            
+            <h1 className="text-white text-4xl sm:text-5xl font-bold text-center mb-8">
+              START AN INTERVIEW
             </h1>
             
-            <div className="flex flex-wrap justify-center items-center gap-3 mb-12">
-              {['CHOOSE A MODE', 'FOLLOW THE STEPS', 'PRACTICE','GET YOUR DREAM JOB'].map((text, index) => (
-                <React.Fragment key={text}>
+            
+            <div className="flex flex-wrap justify-center items-center gap-2 mb-16">
+              {INTERVIEW_STEPS.map((step, index) => (
+                <React.Fragment key={step}>
                   <div className="flex items-center gap-2">
-                    <div className="step-indicator"></div>
-                      
-                    <p className="text-sm text-gray-500">{text}</p>
+                    <div className="w-4 h-4 rounded-full bg-white/30"></div>
+                    <span className="text-gray-400 text-sm font-medium">{step}</span>
                   </div>
-                  {index < 3 && <div className="step-connector"></div>}
+                  {index < INTERVIEW_STEPS.length - 1 && (
+                    <div className="w-8 h-px bg-gray-700"></div>
+                  )}
                 </React.Fragment>
               ))}
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-              {InterviewCategories.map((card, index) => (
-                <div key={index} className="card-option group p-8 pt-16 flex flex-col items-center relative">
-                  {card.icon}
-                  <h3 className="text-white text-xl font-bold text-center mb-3 mt-1">{card.title}</h3>
-                  <p className="text-sm text-center text-white leading-relaxed">
-                    {card.desc}
-                  </p>
-                  <Link href={card.link} className="w-full">
-                    <button className="start-btn mt-6 w-full py-3 group-hover:bg-opacity-100 group-hover:translate-y-0.5">
-                      Get Started
-                    </button>
-                  </Link>
-
-                </div>
+            
+           
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-16">
+              {INTERVIEW_OPTIONS.map((option) => (
+                <InterviewCard
+                  key={option.id}
+                  icon={
+                    <InterviewIcon 
+                      iconPath={option.iconPath}
+                      alt={option.title}
+                    />
+                  }
+                  title={option.title}
+                  description={option.description}
+                  link={option.link}
+                />
               ))}
             </div>
           </div>
