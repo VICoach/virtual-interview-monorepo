@@ -2,11 +2,8 @@
 
 import * as React from "react"
 import {
-  History,
   PlusIcon,
   Menu,
-  Calendar,
-  User,
 } from "lucide-react"
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
@@ -16,27 +13,13 @@ import {
 } from "@/components/ui/sheet"
 import Link from "next/link"
 import Image from "next/image"
+import { DialogTitle } from "@radix-ui/react-dialog"
+import { useNavItems } from "./NavItems"
 
-const navItems = [
-  {
-    title: "Home",
-    url: "/",
-    icon: Calendar,
-    isActive: true,
-  },
-  {
-    title: "Interview",
-    url: "/interview",
-    icon: User,
-  },
-  {
-    title: "History",
-    url: "/history",
-    icon: History,
-  },
-]
+
 
 export default function MobileNavigation() {
+  const navMain = useNavItems()
   const isMobile = useIsMobile()
   const [open, setOpen] = React.useState(false)
   
@@ -53,6 +36,7 @@ export default function MobileNavigation() {
             </button>
           </SheetTrigger>
           <SheetContent side="left" className="w-[280px] bg-blue-dark p-0 border-r-0">
+          <DialogTitle className="sr-only">Mobile Navigation</DialogTitle>
             <div className="flex flex-col h-full text-white">
               <div className="p-4 border-b border-white/10">
                 <Link href="/" className="flex items-center space-x-2" onClick={() => setOpen(false)}>
@@ -69,7 +53,7 @@ export default function MobileNavigation() {
               
               <div className="p-4">
                 <Link
-                  href="/"
+                  href="/interview"
                   className="flex items-center w-full text-white p-3  bg-[#5B879E]  hover:bg-[#4A7A8F] transition-colors rounded-full mt-10 mb-8"
                   onClick={() => setOpen(false)}
                 >
@@ -78,7 +62,7 @@ export default function MobileNavigation() {
                 </Link>
                 
                 <nav className="space-y-2 mt-4">
-                  {navItems.map((item) => (
+                  {navMain.map((item) => (
                     <Link
                       key={item.title}
                       href={item.url}

@@ -2,10 +2,7 @@
 
 import * as React from "react"
 import {
-  History, 
   PlusIcon,
-  User,
-  Calendar
 } from "lucide-react"
 import { NavMain } from "@/components/NavMain"
 import { NavUser } from "@/components/NavUser"
@@ -22,40 +19,18 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { useNavItems } from "./NavItems"
 
 
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "",
   }}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const pathname = usePathname() 
-
-
-  const navMain = [
-    {
-      title: "Home",
-      url: "/",
-      icon: Calendar,
-      isActive: pathname === "/",
-    },
-    {
-      title: "Interview",
-      url: "/interview",
-      icon: User,
-      isActive: pathname.startsWith("/interview"),
-    },
-    {
-      title: "History",
-      url: "/history",
-      icon: History,
-      isActive: pathname.startsWith("/history"),
-    },
-  ]
+  const navMain = useNavItems()
   return (
     <Sidebar collapsible="icon" className="bg-brand" {...props}>
       <SidebarHeader className="hidden md:block">
@@ -77,7 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   alt="logo"
                   width={50}
                   height={30}
-                  className="h-8 w-8 transition-all duration-300 group-data-[state=collapsed]:h-6 group-data-[state=collapsed]:w-6"
+                  className="h-8 w-8 transition-all duration-300 group-data-[state=collapsed]:h-6 group-data-[state=collapsed]:w-6 group-data-[state=collapsed]:ml-1"
                 />
                 <span className="text-base font-bold hidden lg:block text-white group-data-[state=collapsed]:hidden">
                   Virtual Interview
