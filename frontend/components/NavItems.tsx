@@ -1,16 +1,17 @@
-import { Calendar, History, User } from "lucide-react"
-import { usePathname } from "next/navigation"
+import { Calendar, History, User, LucideIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
+
 
 export type NavItem = {
-  title: string
-  url: string
-  icon: any 
-  isActive?: boolean
-}
+  title: string;
+  url: string;
+  icon: LucideIcon; 
+  isActive?: boolean;
+};
 
 export function useNavItems() {
-  const pathname = usePathname()
-  
+  const pathname = usePathname();
+
   const navItems: NavItem[] = [
     {
       title: "Home",
@@ -30,7 +31,7 @@ export function useNavItems() {
       icon: History,
       isActive: pathname.startsWith("/history"),
     },
-  ]
-  
-  return navItems
+  ];
+
+  return navItems;
 }
