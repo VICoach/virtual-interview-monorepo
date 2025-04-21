@@ -12,8 +12,10 @@ import AuthLogoSection from "@/components/auth/AuthLogoSection";
 import FormNavigation from "@/components/auth/FormNavigation";
 import DividerWithText from "@/components/auth/DividerWithText";
 import SocialAuthButton from "@/components/auth/SocialAuthButton";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
+  const router = useRouter();
   const [loginUser, { isLoading }] = useLoginUserMutation();
 
   const methods = useForm<UserLoginFormData>({
@@ -27,8 +29,9 @@ const LoginPage = () => {
   const onSubmit: SubmitHandler<UserLoginFormData> = useCallback(
     async (data: UserLoginFormData) => {
       try {
-        const response = await loginUser(data).unwrap();
-        console.log("Login response:", response);
+        const { access_token } = await loginUser(data).unwrap();
+        localStorage.setItem("token", access_token);
+        router.push("/");
       } catch (error) {
         console.error("Failed to log in:", error);
       }

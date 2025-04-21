@@ -11,6 +11,7 @@ const customBaseQuery = async (
 ) => {
   const baseQuery = fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+    credentials: "include",
     prepareHeaders: async (headers) => {
       const token = localStorage.getItem("token");
       if (token) {
@@ -20,7 +21,28 @@ const customBaseQuery = async (
     },
   });
   try {
-    const result: any = await baseQuery(args, api, extraOptions);
+    let result: any = await baseQuery(args, api, extraOptions);
+
+    if (result.error?.status === 401) {
+      const refresh: any = await baseQuery(
+        {
+          url: "/auth/refresh-token",
+          method: "POST",
+        },
+        api,
+        extraOptions,
+      );
+      if (refresh.data?.data?.access_token) {
+        const newToken = refresh.data.data.access_token;
+        localStorage.setItem("token", newToken);
+        result = await baseQuery(args, api, extraOptions);
+      } else {
+        toast.error("Session expired. Please log in again.");
+        localStorage.removeItem("token");
+        return { error: { status: 401, error: "Unauthorized" } };
+      }
+    }
+
     const endpointName = api.endpoint ?? "";
     const shouldSkip = skipToastEndpoints.includes(endpointName);
 
