@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { ResetPasswordDto } from "../../backend/src/auth/dto/reset-password.dto";
 
 declare global {
   interface LayoutProps {
@@ -26,6 +27,12 @@ declare global {
     statusCode: number;
     message: string;
     data: any | null;
+  }
+
+  interface ResetPasswordRequest {
+    token: string;
+    newPassword: string;
+    confirmPassword: string;
   }
 }
 
