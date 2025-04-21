@@ -153,6 +153,12 @@ export class AuthService {
       throw new BadRequestException('Invalid or expired verification token');
     }
 
+    if (user.email_confirmed) {
+      return {
+        message: 'Email is already verified.',
+      };
+    }
+
     // Update user's email_confirmed status
     await this.usersService.updateUser(user.user_id, {
       ...user,
