@@ -1,12 +1,14 @@
+import Image from "next/image";
 import React from "react";
 
 const AuthLayout = ({ children }: LayoutProps) => (
   <main className="relative h-screen w-full overflow-hidden bg-[#e2eced]">
     <div className="absolute inset-0 hidden sm:block">
-      <img
+      <Image
         src="/bg-2.svg"
         alt="background"
-        className="h-full w-full object-cover"
+        fill
+        className="object-cover"
         style={{ objectPosition: "center bottom" }}
       />
     </div>

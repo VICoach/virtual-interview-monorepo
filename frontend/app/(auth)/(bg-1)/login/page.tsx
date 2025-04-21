@@ -36,7 +36,7 @@ const LoginPage = () => {
         console.error("Failed to log in:", error);
       }
     },
-    [loginUser],
+    [loginUser, router],
   );
 
   return (

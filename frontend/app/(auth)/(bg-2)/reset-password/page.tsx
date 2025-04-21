@@ -9,13 +9,21 @@ import { useResetPasswordMutation } from "@/state/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const ResetPasswordPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+
+  useEffect(() => {
+    if (!token) {
+      toast.error("Invalid token. Please try again.");
+      router.push("/login");
+    }
+  }, [token, router]);
 
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
@@ -30,18 +38,17 @@ const ResetPasswordPage = () => {
   const onSubmit: SubmitHandler<ResetPasswordFormData> = useCallback(
     async (data: ResetPasswordFormData) => {
       try {
-        const response = await resetPassword({
+        await resetPassword({
           token: token || "",
           newPassword: data.newPassword,
           confirmPassword: data.confirmPassword,
         }).unwrap();
         router.push("/login");
-        console.log("Email sent response:", response);
       } catch (error) {
-        console.error("Failed to send email:", error);
+        console.error("Failed to reset password:", error);
       }
     },
-    [resetPassword],
+    [resetPassword, token, router],
   );
 
   return (

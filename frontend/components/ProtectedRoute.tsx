@@ -14,6 +14,6 @@ export default function ProtectedRoute({
       const to = encodeURIComponent(window.location.pathname);
       router.replace(`/login?next=${to}`);
     }
-  }, []);
+  }, [router]);
   return <>{children}</>;
 }

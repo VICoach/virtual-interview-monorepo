@@ -2,7 +2,7 @@ import { AlertCircle, CheckCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 
 interface VerificationAlertProps {
-  type: "loading" | "success" | "error" | "missing-token";
+  type: "loading" | "success" | "error" | "missing-token" | "oauth-success";
   countdown?: number;
 }
 
@@ -23,6 +23,17 @@ const VerificationAlert = ({ type, countdown }: VerificationAlertProps) => {
       icon: CheckCircle,
       title: "Email Verified Successfully",
       description: `Your email has been verified. Redirecting in ${countdown} ${countdown === 1 ? "second" : "seconds"}...`,
+      colorClasses: {
+        container: "border-green-200 bg-green-50",
+        icon: "text-green-500",
+        title: "text-green-700",
+        description: "text-green-600",
+      },
+    },
+    "oauth-success": {
+      icon: CheckCircle,
+      title: "Signed In Successfully",
+      description: "You have been signed in successfully.",
       colorClasses: {
         container: "border-green-200 bg-green-50",
         icon: "text-green-500",
