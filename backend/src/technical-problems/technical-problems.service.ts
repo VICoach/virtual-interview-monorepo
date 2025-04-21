@@ -3,6 +3,8 @@ import { PistonService } from '../piston/piston.service';
 import { RunProblemDto } from './dto/run-problem.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { CodeExecutionResult } from './interfaces/code-execution-result.interface';
+import { GetRandomProblemDto } from './dto/get-random-problem.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TechnicalProblemsService {
@@ -13,11 +15,38 @@ export class TechnicalProblemsService {
     private readonly pistonService: PistonService,
   ) {}
 
+  async getProblemById(id: number) {
+    const problem = await this.prisma.technicalProblem.findUnique({
+      where: { problem_id: id },
+    });
+    if (!problem) {
+      throw new NotFoundException(`Problem with ID ${id} not found`);
+    }
+    return problem;
+  }
+
+  async getRandomProblem(filters: GetRandomProblemDto) {
+    const where: Prisma.TechnicalProblemWhereInput = {};
+    if (filters.difficulty) {
+      where.difficulty = filters.difficulty;
+    }
+    if (filters.tag) {
+      where.tags = { has: filters.tag };
+    }
+
+    const candidates = await this.prisma.technicalProblem.findMany({ where });
+    if (candidates.length === 0) {
+      throw new NotFoundException('No problems match the given filters');
+    }
+    const random = candidates[Math.floor(Math.random() * candidates.length)];
+    return random;
+  }
+
   async executeAndTestSolution(
     dto: RunProblemDto,
   ): Promise<CodeExecutionResult> {
     try {
-      const problem = await this.getProblem(dto.problemId);
+      const problem = await this.getProblemById(dto.problemId);
       const { stdout, stderr, executionTime } = await this.executeCode(
         dto,
         problem.input,
@@ -38,24 +67,6 @@ export class TechnicalProblemsService {
       this.logger.error('Error executing solution');
       throw error;
     }
-  }
-
-  private async getProblem(problemId: number) {
-    const problem = await this.prisma.technicalProblem.findUnique({
-      where: { problem_id: problemId },
-      select: {
-        input: true,
-        output: true,
-        time_limit: true,
-        memory_limit: true,
-      },
-    });
-
-    if (!problem) {
-      throw new NotFoundException(`Problem with ID ${problemId} not found`);
-    }
-
-    return problem;
   }
 
   private async executeCode(
