@@ -13,6 +13,29 @@ class Agent:
     def __init__(self):
         self.client = groq.Client(api_key=os.getenv("GROQ_API_KEY"))
         self.system_prompt = None
+        self.problem = None
+        self.addProblem()
+
+    def addProblem(self):
+        self.problem = """
+            - **Problem Statement:**
+                "You are given an `n x n` chessboard with a knight starting at position `(r, c)`. The knight can move like in chess:
+                ```
+                (r-2, c-1), (r-2, c+1), (r+2, c-1), (r+2, c+1),
+                (r-1, c-2), (r-1, c+2), (r+1, c-2), (r+1, c+2)
+                ```
+                Return the probability that after `k` moves, the knight remains inside the board."
+            - **Function Signature (Python Example):**
+                ```python
+                def knight_probability(n: int, k: int, r: int, c: int) -> float:
+                        # Implement function here
+                ```
+            - **Constraints:**
+                - `1 <= n <= 25`
+                - `0 <= k <= 100`
+                - `0 <= r, c < n`
+        """
+        return self.problem
 
     def getSystemPrompt(self, problem):
         self.system_prompt = f"""
@@ -61,24 +84,7 @@ class Agent:
     async def handle_connection(self,websocket, path=None):  
         # Send a welcome message
         await websocket.send("Welcome to the technical interview! Let's begin.")
-        system_prompt = self.getSystemPrompt("""
-            - **Problem Statement:**
-                "You are given an `n x n` chessboard with a knight starting at position `(r, c)`. The knight can move like in chess:
-                ```
-                (r-2, c-1), (r-2, c+1), (r+2, c-1), (r+2, c+1),
-                (r-1, c-2), (r-1, c+2), (r+1, c-2), (r+1, c+2)
-                ```
-                Return the probability that after `k` moves, the knight remains inside the board."
-            - **Function Signature (Python Example):**
-                ```python
-                def knight_probability(n: int, k: int, r: int, c: int) -> float:
-                        # Implement function here
-                ```
-            - **Constraints:**
-                - `1 <= n <= 25`
-                - `0 <= k <= 100`
-                - `0 <= r, c < n`
-        """)
+        system_prompt = self.getSystemPrompt(self.problem)
         # Initialize the conversation with the system prompt
         messages = [{"role": "system", "content": system_prompt}]
 
