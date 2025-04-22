@@ -10,7 +10,17 @@ load_dotenv()
 nest_asyncio.apply()
 
 class Agent:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(Agent, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
+        if hasattr(self, '_initialized') and self._initialized:
+            return
+        self._initialized = True
         self.client = groq.Client(api_key=os.getenv("GROQ_API_KEY"))
         self.system_prompt = None
         self.problem = None
