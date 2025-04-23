@@ -150,6 +150,21 @@ describe('AuthController', () => {
       expect(result).toEqual(ResponseUtil.success(expectedMessage, null));
     });
 
+    it('should return a success message when email is already verified', async () => {
+      const token = 'alreadyVerifiedToken';
+
+      mockAuthService.verifyEmail.mockResolvedValue({
+        message: 'Email is already verified.',
+      });
+
+      const result = await controller.verifyEmail(token);
+
+      expect(authService.verifyEmail).toHaveBeenCalledWith(token);
+      expect(result).toEqual(
+        ResponseUtil.success('Email is already verified.', null),
+      );
+    });
+
     it('should throw an error when verification fails', async () => {
       const token = 'invalidToken';
 
