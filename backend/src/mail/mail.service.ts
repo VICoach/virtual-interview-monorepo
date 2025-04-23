@@ -5,7 +5,7 @@ import sgMail from '@sendgrid/mail';
 @Injectable()
 export class MailerService {
   constructor(private readonly configService: ConfigService) {
-    const apiKey = process.env.SENDGRID_API_KEY;
+    const apiKey = this.configService.get<string>('SENDGRID_API_KEY');
     if (!apiKey) {
       throw new Error('SENDGRID_API_KEY is not defined');
     }
@@ -13,7 +13,7 @@ export class MailerService {
   }
 
   async sendVerificationEmail(email: string, token: string): Promise<void> {
-    const fromEmail = process.env.SENDGRID_FROM_EMAIL;
+    const fromEmail = this.configService.get<string>('SENDGRID_FROM_EMAIL');
     if (!fromEmail) {
       throw new Error('SENDGRID_FROM_EMAIL is not defined');
     }
@@ -41,7 +41,7 @@ export class MailerService {
     email: string,
     resetToken: string | Uint8Array<ArrayBufferLike>,
   ) {
-    const fromEmail = process.env.SENDGRID_FROM_EMAIL;
+    const fromEmail = this.configService.get<string>('SENDGRID_FROM_EMAIL');
     if (!fromEmail) {
       throw new Error('SENDGRID_FROM_EMAIL is not defined');
     }
