@@ -1,8 +1,7 @@
-from fastapi import FastAPI, File, UploadFile, WebSocket, WebSocketDisconnect
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import os
 import uuid
-import websockets
+import base64
 import websockets
 from STT_TTS import transcribe_audio, stream_speech
 
@@ -39,30 +38,29 @@ async def websocket_endpoint(websocket: WebSocket):
     print("🔌 Incoming WebSocket connection...")
     await websocket.accept()
     try:
-        # Receive audio bytes
-        audio_data = await websocket.receive_bytes()
-
-        # Save to temp file
-        temp_filename = f"{uuid.uuid4()}.mp3"
-        temp_file_path = os.path.join(TEMP_DIR, temp_filename)
-        with open(temp_file_path, "wb") as f:
-            f.write(audio_data)
+        # Receive message (including the Base64 audio data)
+        message = await websocket.receive_bytes()
+        print(f"Received message of {len(message)} bytes")
 
         # Transcribe audio
-        user_text = await transcribe_audio(temp_file_path)
+        user_text = await transcribe_audio(message)
+        print(f"Transcription: {user_text}")
 
-        # Send to agent via WebSocket and get reply
+        # Send to agent via WebSocket and get the response
         ai_reply = await communicate_with_agent(user_text)
+        print(f"AI Reply: {ai_reply}")
 
         # Generate TTS response (WAV audio)
-        audio_stream = stream_speech(ai_reply)
+        audio_stream = await stream_speech(ai_reply)
+        print(f"Generated TTS audio of {len(audio_stream)} bytes")
 
-        # Read audio into bytes
-        audio_bytes = b"".join([chunk async for chunk in audio_stream])
-
-        # Send back both text and audio
-        await websocket.send_json({"text": ai_reply})
-        await websocket.send_bytes(audio_bytes)
+        # # Send back both text and audio
+        # await websocket.send_json({
+        #     "text": ai_reply,
+        #     "audio": audio_stream
+        # })
+        # await websocket.send_bytes(audio_bytes)
+        await websocket.send_bytes(audio_stream)
 
     except WebSocketDisconnect:
         print("Client disconnected")

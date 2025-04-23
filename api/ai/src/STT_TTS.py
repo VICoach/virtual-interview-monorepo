@@ -17,19 +17,25 @@ GROQ_TTS_MODEL = "playai-tts"
 ELEVEN_LABS_API_KEY="sk_65537218b39432e549f8bbf9b0d4974eff0dad1cbfaf2bff"
 
 # Step 1: Asynchronous Speech-to-Text (STT) using Groq Whisper
-async def transcribe_audio(audio_path):
+async def transcribe_audio(audio_bytes: bytes):
     start_time = time.time()
-    with open(audio_path, "rb") as audio_file:
-        files = {"file": audio_file}
-        headers = {"Authorization": f"Bearer {GROQ_API_KEY}"}
-        payload = {"model": GROQ_WHISPER_MODEL}
-        url = "https://api.groq.com/openai/v1/audio/transcriptions"
-        response = requests.post(url, headers=headers, files=files, data=payload)
+
+    # Create an in-memory file-like object
+    audio_file = io.BytesIO(audio_bytes)
+    audio_file.name = "audio.wav"  # Required for the multipart/form-data
+
+    files = {"file": audio_file}
+    headers = {"Authorization": f"Bearer {GROQ_API_KEY}"}
+    payload = {"model": GROQ_WHISPER_MODEL}
+    url = "https://api.groq.com/openai/v1/audio/transcriptions"
+
+    response = requests.post(url, headers=headers, files=files, data=payload)
     response_json = response.json()
+
     elapsed_time = time.time() - start_time
     print(f"Transcription Time: {elapsed_time:.2f} seconds")
-    return response_json.get("text", "Error in transcription")
 
+    return response_json.get("text", "Error in transcription")
 
 # Step 3: Stream TTS response
 elevenlabs_client = None
