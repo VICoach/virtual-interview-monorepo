@@ -40,3 +40,38 @@ export const userLoginSchema = z
     message: "Password is required",
   });
 export type UserLoginFormData = z.infer<typeof userLoginSchema>;
+
+// Resend Verification Email Schema
+export const resendVerificationEmailSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+export type ResendVerificationEmailFormData = z.infer<
+  typeof resendVerificationEmailSchema
+>;
+
+// Forgot Password Schema
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+
+// Reset Password Schema
+export const resetPasswordSchema = z
+  .object({
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[0-9]/, "Password must contain at least one number")
+      .regex(
+        /[@$!%*?&]/,
+        "Password must contain at least one special character",
+      ),
+    confirmPassword: z.string().min(1, "Confirm password is required"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;

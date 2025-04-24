@@ -92,10 +92,20 @@ export class AuthController {
     status: 401,
     description: 'Unauthorized - Invalid credentials',
   })
-  async login(@Body() loginDto: LoginDto) {
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
-      const result = await this.authService.login(loginDto);
-      return ResponseUtil.success('Login successful', result);
+      const { access_token, refresh_token } =
+        await this.authService.login(loginDto);
+      res.cookie('refresh_token', refresh_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      return ResponseUtil.success('Login successful', { access_token });
     } catch (error) {
       const typedError = error as CustomError;
       throw new HttpException(

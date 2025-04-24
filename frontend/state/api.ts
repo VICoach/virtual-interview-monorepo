@@ -2,6 +2,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BaseQueryApi, FetchArgs } from "@reduxjs/toolkit/query";
 import { toast } from "sonner";
 
+const skipToastEndpoints = ["verifyEmail"];
+
 const customBaseQuery = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
@@ -9,6 +11,7 @@ const customBaseQuery = async (
 ) => {
   const baseQuery = fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+    credentials: "include",
     prepareHeaders: async (headers) => {
       const token = localStorage.getItem("token");
       if (token) {
@@ -18,9 +21,32 @@ const customBaseQuery = async (
     },
   });
   try {
-    const result: any = await baseQuery(args, api, extraOptions);
+    let result: any = await baseQuery(args, api, extraOptions);
 
-    if (result.error) {
+    if (result.error?.status === 401) {
+      const refresh: any = await baseQuery(
+        {
+          url: "/auth/refresh-token",
+          method: "POST",
+        },
+        api,
+        extraOptions,
+      );
+      if (refresh.data?.data?.access_token) {
+        const newToken = refresh.data.data.access_token;
+        localStorage.setItem("token", newToken);
+        result = await baseQuery(args, api, extraOptions);
+      } else {
+        toast.error("Session expired. Please log in again.");
+        localStorage.removeItem("token");
+        return { error: { status: 401, error: "Unauthorized" } };
+      }
+    }
+
+    const endpointName = api.endpoint ?? "";
+    const shouldSkip = skipToastEndpoints.includes(endpointName);
+
+    if (!shouldSkip && result.error) {
       const errorData = result.error.data;
       const errorMessage =
         errorData?.message ||
@@ -31,7 +57,7 @@ const customBaseQuery = async (
 
     const isMutationRequest =
       (args as FetchArgs).method && (args as FetchArgs).method !== "GET";
-    if (isMutationRequest) {
+    if (!shouldSkip && isMutationRequest) {
       const messages = [
         result.data?.message,
         result.data?.data?.message,
@@ -85,27 +111,35 @@ export const api = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    confirmEmail: builder.mutation({
+    verifyEmail: builder.mutation<ApiResponse, { token: string }>({
       query: (token) => ({
-        url: "/auth/confirm-email",
+        url: "/auth/verify-email",
         method: "POST",
-        body: { token },
+        body: token,
       }),
       invalidatesTags: ["User"],
     }),
-    forgotPassword: builder.mutation({
+    sendVerificationEmail: builder.mutation<ApiResponse, { email: string }>({
+      query: (email) => ({
+        url: "/auth/send-verify-email",
+        method: "POST",
+        body: email,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    forgotPassword: builder.mutation<ApiResponse, { email: string }>({
       query: (email) => ({
         url: "/auth/forgot-password",
         method: "POST",
-        body: { email },
+        body: email,
       }),
       invalidatesTags: ["User"],
     }),
-    resetPassword: builder.mutation({
-      query: ({ token, password }) => ({
+    resetPassword: builder.mutation<ApiResponse, ResetPasswordRequest>({
+      query: ({ token, newPassword, confirmPassword }) => ({
         url: "/auth/reset-password",
         method: "POST",
-        body: { token, password },
+        body: { token, newPassword, confirmPassword },
       }),
       invalidatesTags: ["User"],
     }),
@@ -122,7 +156,8 @@ export const api = createApi({
 export const {
   useRegisterUserMutation,
   useLoginUserMutation,
-  useConfirmEmailMutation,
+  useVerifyEmailMutation,
+  useSendVerificationEmailMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useGetUserQuery,

@@ -105,18 +105,32 @@ describe('AuthController', () => {
         password: 'Password123!',
       };
 
-      const expectedResult = {
+      const mockTokens = {
         access_token: 'mockAccessToken',
         refresh_token: 'mockRefreshToken',
       };
 
-      mockAuthService.login.mockResolvedValue(expectedResult);
+      mockAuthService.login.mockResolvedValue(mockTokens);
 
-      const result = await controller.login(loginDto);
+      const mockResponse = { cookie: jest.fn() };
+      const result = await controller.login(loginDto, mockResponse as any);
 
       expect(authService.login).toHaveBeenCalledWith(loginDto);
+      expect(mockResponse.cookie).toHaveBeenCalledWith(
+        'refresh_token',
+        mockTokens.refresh_token,
+        {
+          httpOnly: true,
+          secure: false, // test env
+          sameSite: 'lax',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        },
+      );
+
       expect(result).toEqual(
-        ResponseUtil.success('Login successful', expectedResult),
+        ResponseUtil.success('Login successful', {
+          access_token: mockTokens.access_token,
+        }),
       );
     });
 
@@ -131,7 +145,11 @@ describe('AuthController', () => {
         status: HttpStatus.UNAUTHORIZED,
       });
 
-      await expect(controller.login(loginDto)).rejects.toThrow();
+      const mockResponse = { cookie: jest.fn() };
+
+      await expect(
+        controller.login(loginDto, mockResponse as any),
+      ).rejects.toThrow();
     });
   });
 

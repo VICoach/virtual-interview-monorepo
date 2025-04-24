@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import sgMail from '@sendgrid/mail';
 
 @Injectable()
 export class MailerService {
-  constructor() {
-    const apiKey = process.env.SENDGRID_API_KEY;
+  constructor(private readonly configService: ConfigService) {
+    const apiKey = this.configService.get<string>('SENDGRID_API_KEY');
     if (!apiKey) {
       throw new Error('SENDGRID_API_KEY is not defined');
     }
@@ -12,12 +13,12 @@ export class MailerService {
   }
 
   async sendVerificationEmail(email: string, token: string): Promise<void> {
-    const fromEmail = process.env.SENDGRID_FROM_EMAIL;
+    const fromEmail = this.configService.get<string>('SENDGRID_FROM_EMAIL');
     if (!fromEmail) {
       throw new Error('SENDGRID_FROM_EMAIL is not defined');
     }
 
-    const verificationUrl = `${process.env.FRONT_URL}/verify-email?token=${token}`;
+    const verificationUrl = `${this.configService.get('FRONTEND_URL')}/verify-email?token=${token}`;
 
     const msg = {
       to: email,
@@ -40,7 +41,7 @@ export class MailerService {
     email: string,
     resetToken: string | Uint8Array<ArrayBufferLike>,
   ) {
-    const fromEmail = process.env.SENDGRID_FROM_EMAIL;
+    const fromEmail = this.configService.get<string>('SENDGRID_FROM_EMAIL');
     if (!fromEmail) {
       throw new Error('SENDGRID_FROM_EMAIL is not defined');
     }
@@ -50,7 +51,7 @@ export class MailerService {
         ? Buffer.from(resetToken).toString('base64')
         : resetToken;
 
-    const resetUrl = `${process.env.FRONT_URL}/reset-password?token=${tokenString}`;
+    const resetUrl = `${this.configService.get('FRONTEND_URL')}/reset-password?token=${tokenString}`;
 
     const msg = {
       to: email,
