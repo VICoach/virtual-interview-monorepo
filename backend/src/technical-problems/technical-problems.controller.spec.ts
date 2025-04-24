@@ -30,6 +30,10 @@ describe('TechnicalProblemsController', () => {
           provide: TechnicalProblemsService,
           useValue: {
             executeAndTestSolution: jest.fn().mockResolvedValue(mockResult),
+            getProblemById: jest.fn().mockResolvedValue({ id: 1, foo: 'bar' }),
+            getRandomProblem: jest
+              .fn()
+              .mockResolvedValue({ id: 2, foo: 'baz' }),
           },
         },
       ],
@@ -53,6 +57,7 @@ describe('TechnicalProblemsController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
   describe('POST /problems/run', () => {
     const validDto: RunProblemDto = {
       problemId: 1,
@@ -90,6 +95,55 @@ describe('TechnicalProblemsController', () => {
         .post('/problems/run')
         .send(validDto)
         .expect(500);
+    });
+  });
+
+  describe('GET /problems/:id', () => {
+    it('should return 200 with the problem', async () => {
+      const mockProblem = { id: 1, foo: 'bar' };
+      (service.getProblemById as jest.Mock).mockResolvedValueOnce(mockProblem);
+
+      const res = await request(app.getHttpServer() as http.Server)
+        .get('/problems/1')
+        .expect(200);
+
+      expect(res.body).toEqual(mockProblem);
+      expect(service.getProblemById).toHaveBeenCalledWith(1);
+    });
+
+    it('should return 404 when problem not found', async () => {
+      (service.getProblemById as jest.Mock).mockRejectedValueOnce(
+        new NotFoundException(),
+      );
+      await request(app.getHttpServer() as http.Server)
+        .get('/problems/999')
+        .expect(404);
+    });
+  });
+
+  describe('GET /problems/random', () => {
+    it('should return 200 with a random problem', async () => {
+      const mockRand = { id: 2, foo: 'baz' };
+      (service.getRandomProblem as jest.Mock).mockResolvedValueOnce(mockRand);
+
+      const res = await request(app.getHttpServer() as http.Server)
+        .get('/problems/random?difficulty=hard&tag=graph')
+        .expect(200);
+
+      expect(res.body).toEqual(mockRand);
+      expect(service.getRandomProblem).toHaveBeenCalledWith({
+        difficulty: 'hard',
+        tag: 'graph',
+      });
+    });
+
+    it('should return 404 when no matching problems', async () => {
+      (service.getRandomProblem as jest.Mock).mockRejectedValueOnce(
+        new NotFoundException(),
+      );
+      await request(app.getHttpServer() as http.Server)
+        .get('/problems/random')
+        .expect(404);
     });
   });
 });
