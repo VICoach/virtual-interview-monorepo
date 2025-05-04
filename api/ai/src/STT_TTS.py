@@ -10,11 +10,11 @@ from elevenlabs import ElevenLabs
 file_id = "1--pzotRY7K8y_lr6CniVr4wJa9_fvhhS"
 AUDIO_FILE = "audio_file.mp3"
 gdown.download(f"https://drive.google.com/uc?id={file_id}", AUDIO_FILE, quiet=False)
-GROQ_API_KEY = "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"
+GROQ_API_KEY = ""
 GROQ_MODEL = "llama-3.3-70b-versatile"
 GROQ_WHISPER_MODEL = "whisper-large-v3"
 GROQ_TTS_MODEL = "playai-tts"
-ELEVEN_LABS_API_KEY="sk_65537218b39432e549f8bbf9b0d4974eff0dad1cbfaf2bff"
+ELEVEN_LABS_API_KEY=""
 
 # Step 1: Asynchronous Speech-to-Text (STT) using Groq Whisper
 async def transcribe_audio(audio_bytes: bytes):
