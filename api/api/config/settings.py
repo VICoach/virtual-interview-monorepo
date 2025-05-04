@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     Utilizes the BaseSettings from pydantic for environment variables.
     """
 
+    GROQ_API_KEY: str
+    ELEVEN_LABS_API_KEY: str
+    GROQ_MODEL: str
+
     class Config:
         env_file = ".env"
         extra = "ignore"
