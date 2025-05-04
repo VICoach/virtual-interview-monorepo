@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from api.config.settings import get_settings
 from api.logger.logger import get_logger
-from api.routers import test_router
+from api.routers import test_router, websocket
 settings = get_settings()
 logger = get_logger(__file__)
 
@@ -31,6 +31,7 @@ logger.info(f"Starting App : \n {ascii_art}")
 logger.info("App Ready")
 
 app.include_router(test_router.router, tags=["Test"])
+app.include_router(websocket.router, tags=["WebSocket"])
 
 @app.get("/", response_class=PlainTextResponse)
 async def root():

@@ -1,0 +1,10 @@
+ipywebrtc
+ipywidgets
+nest-asyncio
+elevenlabs
+gdown
+requests
+soundfile
+dotenv
+groq
+playsound
