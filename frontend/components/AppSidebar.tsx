@@ -48,7 +48,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 className="flex items-center space-x-2 p-4 group-data-[state=collapsed]:p-2"
               >
                 <Image
-                  src="/logo.png"
+                  src="/logo.svg"
                   alt="logo"
                   width={50}
                   height={30}

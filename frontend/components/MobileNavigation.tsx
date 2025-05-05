@@ -41,7 +41,7 @@ export default function MobileNavigation() {
               <div className="p-4 border-b border-white/10">
                 <Link href="/" className="flex items-center space-x-2" onClick={() => setOpen(false)}>
                   <Image
-                    src="/logo.png"
+                    src="/logo.svg"
                     alt="logo"
                     width={40}
                     height={24}
