@@ -8,6 +8,7 @@ import {
   Req,
   Res,
   Get,
+  Query,
 } from '@nestjs/common';
 import { LoginDto } from './dto/login-user.dto';
 import { AuthService } from './auth.service';
@@ -118,7 +119,7 @@ export class AuthController {
     }
   }
 
-  @Post('/verify-email')
+  @Get('/verify-email')
   @Public()
   @ApiOperation({ summary: 'Verify email address' })
   @ApiBody({
@@ -130,7 +131,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 200, description: 'Email verified successfully' })
   @ApiResponse({ status: 400, description: 'Invalid or expired token' })
-  async verifyEmail(@Body('token') token: string) {
+  async verifyEmail(@Query('token') token: string) {
     try {
       const result = await this.authService.verifyEmail(token);
       return ResponseUtil.success(result.message, null);

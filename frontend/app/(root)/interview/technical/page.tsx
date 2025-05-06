@@ -4,8 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { CustomFormField } from "@/components/CustomFormFieldInterview"
 import { Button } from "@/components/ui/button"
-import { Clock, BarChart2, Globe, Briefcase, GraduationCap, FileText, Building, Laptop } from "lucide-react"
-
+import { Clock, BarChart2, Briefcase, GraduationCap, Building, Laptop, Languages } from "lucide-react"
 
 // Form validation schema
 const formSchema = z.object({
@@ -91,8 +90,9 @@ export default function InterviewConfigPage() {
     },
   })
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     console.log("Form submitted:", data)
+    
   }
 
   return (
@@ -110,7 +110,7 @@ export default function InterviewConfigPage() {
 
                 <div className="flex items-center gap-2 mb-4">
                   <div className="text-white">
-                    <Globe size={20} />
+                    <Languages size={20} />
                   </div>
                   <CustomFormField
                     name="language"
@@ -160,7 +160,7 @@ export default function InterviewConfigPage() {
                       <Laptop size={20} />
                     </div>
                     <CustomFormField
-                      name="Programming Language"
+                      name="programmingLanguage"
                       label="Programming Language:"
                       type="select"
                       options={programmingLanguageOptions}
@@ -183,7 +183,7 @@ export default function InterviewConfigPage() {
                       <GraduationCap size={20} />
                     </div>
                     <CustomFormField
-                      name="Education Level"
+                      name="educationLevel"
                       label="Education Level:"
                       type="select"
                       options={educationLevelOptions}
@@ -217,7 +217,7 @@ export default function InterviewConfigPage() {
                       <Building size={20} />
                     </div>
                     <CustomFormField
-                      name="Experience Level"
+                      name="experienceLevel"
                       label="Experience Level:"
                       type="select"
                       options={experienceLevelOptions}

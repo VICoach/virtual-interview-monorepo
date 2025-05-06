@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BaseQueryApi, FetchArgs } from "@reduxjs/toolkit/query";
 import { toast } from "sonner";
+import { create } from "domain";
 
 const skipToastEndpoints = ["verifyEmail"];
 
-const customBaseQuery = async (
+export const customBaseQuery = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
   extraOptions: any,
@@ -150,6 +151,14 @@ export const api = createApi({
       }),
       providesTags: ["User"],
     }),
+
+    createInterview: builder.mutation({
+      query: (interviewData) => ({
+        url: "/interview",
+        method: "POST",
+        body: interviewData,
+      }),
+    }),
   }),
 });
 
@@ -161,4 +170,5 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useGetUserQuery,
+  useCreateInterviewMutation,
 } = api;

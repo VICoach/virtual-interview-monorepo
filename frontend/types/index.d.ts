@@ -34,6 +34,8 @@ declare global {
     newPassword: string;
     confirmPassword: string;
   }
+
+  
 }
 
 export {};

@@ -34,7 +34,6 @@ model User {
   refresh_token      String?
   access_token       String?
   profile            Profile?
-  interviewConfigs   InterviewConfiguration[]
   interviewSessions  InterviewSession[]
   performanceMetrics PerformanceMetric[]
 }
@@ -50,83 +49,28 @@ enum ProviderType {
   GOOGLE
 }
 
-model Profile {
-  profile_id Int      @id @default(autoincrement())
-  user_id    Int      @unique
-  education  String
-  skills     String[]
-  languages  String[]
-  user       User     @relation(fields: [user_id], references: [user_id])
+enum InterviewMode {
+  TECHNICAL
+  MOCK_UP
+  QUESTION_BY_QUESTION
 }
-
 model InterviewConfiguration {
   config_id          Int               @id @default(autoincrement())
-  user_id            Int               @unique
-  role_specification String
-  resume             String
-  interview_mode     String
-  user               User              @relation(fields: [user_id], references: [user_id])
+  interview_mode     InterviewMode
+  duration           Int
+  language           String
   interviewSession   InterviewSession?
 }
 
 model InterviewSession {
   session_id         Int                    @id @default(autoincrement())
-  user_id            Int
   config_id          Int                    @unique
+  user_id            Int                    @unique   
   start_time         DateTime
   end_time           DateTime?
   user               User                   @relation(fields: [user_id], references: [user_id])
   config             InterviewConfiguration @relation(fields: [config_id], references: [config_id])
-  questions          Question[]
-  answers            Answer[]
   performanceMetrics PerformanceMetric[]
-  technicalProblems  SessionTechnicalProblem[]
-}
-
-model Question {
-  question_id      Int              @id @default(autoincrement())
-  session_id       Int
-  category         String
-  question         String
-  is_bank_question Boolean          @default(false)
-  session          InterviewSession @relation(fields: [session_id], references: [session_id])
-  answer           Answer?
-}
-
-model QuestionBank {
-  question_bank_id Int    @id @default(autoincrement())
-  category         String
-  question         String
-}
-
-model Answer {
-  answer_id    Int              @id @default(autoincrement())
-  session_id   Int
-  question_id  Int              @unique
-  user_answer  String
-  submitted_at DateTime         @default(now())
-  session      InterviewSession @relation(fields: [session_id], references: [session_id])
-  question     Question         @relation(fields: [question_id], references: [question_id])
-  feedback     Feedback?
-}
-
-model Feedback {
-  feedback_id Int    @id @default(autoincrement())
-  answer_id   Int    @unique
-  feedback    String
-  score       Int
-  answer      Answer @relation(fields: [answer_id], references: [answer_id])
-}
-
-model PerformanceMetric {
-  metric_id    Int              @id @default(autoincrement())
-  user_id      Int
-  session_id   Int
-  metric_name  String
-  metric_value Float
-  recorded_at  DateTime         @default(now())
-  user         User             @relation(fields: [user_id], references: [user_id])
-  session      InterviewSession @relation(fields: [session_id], references: [session_id])
 }
 
 model TechnicalProblem {
@@ -143,7 +87,6 @@ model TechnicalProblem {
   output                String
   solution              TechnicalSolution?
   testCases             TestCase[]
-  sessions              SessionTechnicalProblem[]
 }
 
 model TechnicalSolution {
@@ -162,13 +105,69 @@ model TestCase {
   problem         TechnicalProblem @relation(fields: [problem_id], references: [problem_id])
 }
 
-model SessionTechnicalProblem {
-  session_id    Int              @map("session_id")
-  problem_id    Int              @map("problem_id")
-  session       InterviewSession @relation(fields: [session_id], references: [session_id])
-  problem       TechnicalProblem @relation(fields: [problem_id], references: [problem_id])
-  assigned_at   DateTime         @default(now())
+// model SessionTechnicalProblem {
+//   session_id    Int              @map("session_id")
+//   problem_id    Int              @map("problem_id")
+//   session       InterviewSession @relation(fields: [session_id], references: [session_id])
+//   problem       TechnicalProblem @relation(fields: [problem_id], references: [problem_id])
+//   assigned_at   DateTime         @default(now())
 
-  @@id([session_id, problem_id])
-  @@map("session_technical_problems")
+//   @@id([session_id, problem_id])
+//   @@map("session_technical_problems")
+// }
+
+model PerformanceMetric {
+  metric_id    Int              @id @default(autoincrement())
+  user_id      Int
+  session_id   Int
+  metric_name  String
+  metric_value Float
+  recorded_at  DateTime         @default(now())
+  user         User             @relation(fields: [user_id], references: [user_id])
+  session      InterviewSession @relation(fields: [session_id], references: [session_id])
 }
+
+model Profile {
+  profile_id Int      @id @default(autoincrement())
+  user_id    Int      @unique
+  education  String
+  skills     String[]
+  languages  String[]
+  user       User     @relation(fields: [user_id], references: [user_id])
+}
+
+
+// model Question {
+//   question_id      Int              @id @default(autoincrement())
+//   session_id       Int
+//   category         String
+//   question         String
+//   is_bank_question Boolean          @default(false)
+//   session          InterviewSession @relation(fields: [session_id], references: [session_id])
+//   answer           Answer?
+// }
+
+// model QuestionBank {
+//   question_bank_id Int    @id @default(autoincrement())
+//   category         String
+//   question         String
+// }
+
+// model Answer {
+//   answer_id    Int              @id @default(autoincrement())
+//   session_id   Int
+//   question_id  Int              @unique
+//   user_answer  String
+//   submitted_at DateTime         @default(now())
+//   session      InterviewSession @relation(fields: [session_id], references: [session_id])
+//   question     Question         @relation(fields: [question_id], references: [question_id])
+//   feedback     Feedback?
+// }
+
+// model Feedback {
+//   feedback_id Int    @id @default(autoincrement())
+//   answer_id   Int    @unique
+//   feedback    String
+//   score       Int
+//   answer      Answer @relation(fields: [answer_id], references: [answer_id])
+// }
